@@ -1,6 +1,7 @@
 {
   "name": "portfolio",
   "version": "1.0.0",
+  "description": "Professional Software Engineer Portfolio",
   "homepage": "https://kymanirjarrett.github.io/portfolio",
   "private": true,
   "dependencies": {
