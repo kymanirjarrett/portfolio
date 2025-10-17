@@ -81,7 +81,7 @@ Modify Tailwind classes in `Portfolio.jsx`:
 
 1. Update `homepage` in `package.json`:
 ```json
-"homepage": "https://yourusername.github.io/portfolio"
+"homepage": "https://kymanirjarrett.github.io/portfolio"
 ```
 
 2. Install gh-pages:
@@ -99,7 +99,7 @@ npm run deploy
 ## 🔧 Project Structure
 
 portfolio/
-├── public/              # Static files
+├── public              # Static Files
 ├── src/
 │   ├── components/      # React components
 │   │   └── Portfolio.jsx
