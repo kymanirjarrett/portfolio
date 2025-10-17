@@ -6,6 +6,7 @@ const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showResumeModal, setShowResumeModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -140,6 +141,56 @@ const Portfolio = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      {/* Resume Modal */}
+      {showResumeModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" 
+          onClick={() => setShowResumeModal(false)}
+        >
+          <div 
+            className="relative w-full max-w-5xl h-[90vh] bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-700" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-4 bg-gray-800/95 backdrop-blur-sm border-b border-gray-700">
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Resume Preview
+              </h3>
+              <div className="flex gap-2">
+                <a
+                  href={`${process.env.PUBLIC_URL}/resume.pdf`}
+                  download="Kymani_Jarrett_Resume.pdf"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 flex items-center gap-2 hover:scale-105"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF
+                </a>
+                <button
+                  onClick={() => setShowResumeModal(false)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors font-semibold"
+                  aria-label="Close modal"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            {/* PDF Viewer */}
+            <div className="w-full h-[calc(100%-4rem)]">
+              <iframe
+                src={`${process.env.PUBLIC_URL}/resume.pdf#view=FitH`}
+                className="w-full h-full"
+                title="Resume Preview"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Navigation */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900/95 backdrop-blur-sm shadow-lg shadow-blue-500/10' : 'bg-transparent'}`}>
         <div className="max-w-6xl mx-auto px-6 py-4">
@@ -148,7 +199,7 @@ const Portfolio = () => {
               onClick={() => scrollToSection('home')}
               className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform"
             >
-              {personalInfo.name.split(' ')[0]}
+              {personalInfo.name}
             </button>
             
             {/* Desktop Navigation */}
@@ -460,16 +511,20 @@ const Portfolio = () => {
             </a>
           </div>
           {personalInfo.resume && (
-            <a
-              href={personalInfo.resume}
-              download
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Download Resume
-            </a>
+            <div className="mt-8">
+              <button
+                onClick={() => setShowResumeModal(true)}
+                className="inline-flex items-center gap-3 px-6 py-3 bg-gray-800/80 hover:bg-gray-800 border-2 border-blue-400/50 hover:border-blue-400 rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30 group"
+              >
+                <svg className="w-6 h-6 text-blue-400 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="text-white">View & Download Resume</span>
+                <svg className="w-4 h-4 text-blue-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           )}
         </div>
       </section>
