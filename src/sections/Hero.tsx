@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import RotatingDescriptor from '@/components/RotatingDescriptor'
 import { useWebGL } from '@/hooks/useWebGL'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useResumeModal } from '@/contexts/ResumeModalContext'
 import { sphereLogos } from '@/data/skills'
 
 const TechSphere = lazy(() => import('@/components/TechSphere'))
@@ -51,6 +52,7 @@ function ScrollCue({ reduced }: { reduced: boolean }) {
 export default function Hero() {
   const webGL = useWebGL()
   const reduced = useReducedMotion()
+  const { openModal } = useResumeModal()
 
   const fadeUp = (delay: number) =>
     reduced
@@ -60,6 +62,11 @@ export default function Hero() {
   function scrollToSpotlight(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault()
     document.getElementById('spotlight')?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+  }
+
+  function scrollToContact(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault()
+    document.getElementById('contact')?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
   }
 
   return (
@@ -112,7 +119,8 @@ export default function Hero() {
                 View my work
               </a>
               <a
-                href="mailto:jarretkr@mail.uc.edu"
+                href="#contact"
+                onClick={scrollToContact}
                 className="inline-flex items-center gap-2 px-6 py-3 border border-ink/15 text-ink font-medium rounded-full hover:bg-ink hover:text-paper transition-colors"
               >
                 Get in touch
@@ -136,9 +144,9 @@ export default function Hero() {
               >
                 LinkedIn ↗
               </a>
-              <a href="/resume.pdf" download className="hover:text-ink transition-colors">
+              <button onClick={openModal} className="hover:text-ink transition-colors">
                 Resume ↓
-              </a>
+              </button>
             </motion.div>
           </div>
 

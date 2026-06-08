@@ -2,9 +2,13 @@ import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Nav from './components/Nav'
+import { ResumeModalProvider } from './contexts/ResumeModalContext'
 
 const VigilCaseStudy = lazy(() => import('./pages/VigilCaseStudy'))
 const ClausifyCaseStudy = lazy(() => import('./pages/ClausifyCaseStudy'))
+const ExperiencePage = lazy(() => import('./pages/ExperiencePage'))
+const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
 
 function PageLoader() {
   return (
@@ -25,15 +29,20 @@ function ScrollToTop() {
 export default function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <Nav />
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/projects/vigil" element={<VigilCaseStudy />} />
-          <Route path="/projects/clausify" element={<ClausifyCaseStudy />} />
-        </Routes>
-      </Suspense>
+      <ResumeModalProvider>
+        <ScrollToTop />
+        <Nav />
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/experience" element={<ExperiencePage />} />
+            <Route path="/leadership" element={<LeadershipPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/vigil" element={<VigilCaseStudy />} />
+            <Route path="/projects/clausify" element={<ClausifyCaseStudy />} />
+          </Routes>
+        </Suspense>
+      </ResumeModalProvider>
     </BrowserRouter>
   )
 }

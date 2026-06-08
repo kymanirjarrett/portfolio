@@ -1,12 +1,15 @@
+import { useResumeModal } from '@/contexts/ResumeModalContext'
+
 export default function Footer() {
   const year = new Date().getFullYear()
+  const { openModal } = useResumeModal()
 
   return (
     <footer className="bg-ink text-paper py-12 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         <div>
           <p className="font-display font-semibold text-lg mb-1">Kymani Jarrett</p>
-          <p className="text-paper/50 text-sm">University of Cincinnati · B.S. IT & Cybersecurity</p>
+          <p className="text-paper/50 text-sm">University of Cincinnati · B.Sc. IT & Cybersecurity</p>
         </div>
 
         <nav aria-label="Footer links">
@@ -40,22 +43,12 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a
-                href="/resume.pdf"
-                download
+              <button
+                onClick={openModal}
                 className="text-sm text-paper/60 hover:text-paper transition-colors"
               >
                 Resume
-              </a>
-            </li>
-            <li>
-              <a
-                href="/cv.pdf"
-                download
-                className="text-sm text-paper/60 hover:text-paper transition-colors"
-              >
-                Full CV
-              </a>
+              </button>
             </li>
           </ul>
         </nav>

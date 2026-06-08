@@ -74,7 +74,7 @@ export default function Spotlight() {
     >
       <div className="max-w-6xl mx-auto">
         <p className="font-mono text-xs text-muted uppercase tracking-widest mb-4">Spotlight</p>
-        <h2 className="font-display font-bold text-3xl md:text-4xl text-ink mb-12">Selected facets</h2>
+        <h2 className="font-display font-bold text-3xl md:text-4xl text-ink mb-12">The highlights</h2>
 
         {/* Main featured tile */}
         <div className="relative">

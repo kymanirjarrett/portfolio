@@ -1,19 +1,40 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useResumeModal } from '@/contexts/ResumeModalContext'
 
-const navLinks = [
-  { label: 'Work', href: '/#work' },
-  { label: 'Experience', href: '/#experience' },
-  { label: 'Skills', href: '/#skills' },
-  { label: 'About', href: '/#about' },
+type SubLink = { label: string; href: string }
+
+type NavLink = {
+  label: string
+  href: string
+  isAnchor: boolean
+  children?: SubLink[]
+}
+
+const navLinks: NavLink[] = [
+  {
+    label: 'Home',
+    href: '/',
+    isAnchor: false,
+    children: [
+      { label: 'About', href: '/#about' },
+      { label: 'Skills', href: '/#skills' },
+    ],
+  },
+  { label: 'Experience', href: '/experience', isAnchor: false },
+  { label: 'Projects', href: '/projects', isAnchor: false },
+  { label: 'Leadership', href: '/leadership', isAnchor: false },
 ]
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [mobileHomeExpanded, setMobileHomeExpanded] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
   const reduced = useReducedMotion()
+  const { openModal } = useResumeModal()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32)
@@ -23,20 +44,29 @@ export default function Nav() {
 
   useEffect(() => {
     setMenuOpen(false)
+    setMobileHomeExpanded(false)
   }, [location])
 
+  function scrollTo(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+  }
+
   function handleAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-    if (href.startsWith('/#') && location.pathname === '/') {
+    if (href.startsWith('/#')) {
       e.preventDefault()
       setMenuOpen(false)
       const id = href.slice(2)
-      document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+      if (location.pathname === '/') {
+        scrollTo(id)
+      } else {
+        navigate('/', { state: { scrollTo: id } })
+      }
     }
   }
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled ? 'bg-paper/90 backdrop-blur-md border-b border-ink/5 shadow-sm' : 'bg-transparent'
       }`}
       role="banner"
@@ -51,16 +81,54 @@ export default function Nav() {
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-8" role="list">
-          {navLinks.map(({ label, href }) => (
-            <li key={label}>
-              <a
-                href={href}
-                onClick={(e) => handleAnchorClick(e, href)}
-                className="text-sm font-medium text-muted hover:text-ink transition-colors"
-              >
-                {label}
-              </a>
+        <ul className="hidden md:flex items-center gap-6" role="list">
+          {navLinks.map(({ label, href, isAnchor, children }) => (
+            <li key={label} className="relative group">
+              {children ? (
+                <>
+                  <Link
+                    to={href}
+                    className={`text-sm font-medium transition-colors ${
+                      location.pathname === '/' ? 'text-ink' : 'text-muted hover:text-ink'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-150 z-50">
+                    <div className="bg-paper rounded-xl shadow-lg border border-ink/8 py-1.5 min-w-[110px]">
+                      {children.map((sub) => (
+                        <a
+                          key={sub.label}
+                          href={sub.href}
+                          onClick={(e) => handleAnchorClick(e, sub.href)}
+                          className="block px-4 py-2 text-sm text-muted hover:text-ink hover:bg-ink/4 transition-colors"
+                        >
+                          {sub.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : isAnchor ? (
+                <a
+                  href={href}
+                  onClick={(e) => handleAnchorClick(e, href)}
+                  className="text-sm font-medium text-muted hover:text-ink transition-colors"
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  to={href}
+                  className={`text-sm font-medium transition-colors ${
+                    location.pathname === href || location.pathname.startsWith(href + '/')
+                      ? 'text-ink'
+                      : 'text-muted hover:text-ink'
+                  }`}
+                >
+                  {label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>
@@ -75,51 +143,90 @@ export default function Nav() {
           >
             GitHub
           </a>
-          <a
-            href="/resume.pdf"
-            download
+          <button
+            onClick={openModal}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-ink text-paper text-sm font-medium rounded-full hover:bg-ink/80 transition-colors"
           >
             Resume
-          </a>
+          </button>
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile hamburger */}
         <button
           className="md:hidden p-2 text-ink"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((v) => !v)}
         >
-          <span className="block w-5 h-px bg-current mb-1.5 transition-all" />
-          <span className="block w-5 h-px bg-current mb-1.5 transition-all" />
-          <span className="block w-5 h-px bg-current transition-all" />
+          <span className="block w-5 h-px bg-current mb-1.5" />
+          <span className="block w-5 h-px bg-current mb-1.5" />
+          <span className="block w-5 h-px bg-current" />
         </button>
       </nav>
 
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-paper border-t border-ink/5 px-6 py-6">
-          <ul className="flex flex-col gap-4 mb-6" role="list">
-            {navLinks.map(({ label, href }) => (
+          <ul className="flex flex-col gap-1 mb-6" role="list">
+            {navLinks.map(({ label, href, isAnchor, children }) => (
               <li key={label}>
-                <a
-                  href={href}
-                  onClick={(e) => handleAnchorClick(e, href)}
-                  className="text-base font-medium text-ink"
-                >
-                  {label}
-                </a>
+                {children ? (
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <Link
+                        to={href}
+                        className="py-2.5 text-base font-medium text-ink"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                      <button
+                        onClick={() => setMobileHomeExpanded((v) => !v)}
+                        className="p-2 text-muted"
+                        aria-label="Toggle sub-links"
+                      >
+                        <span className={`block transition-transform duration-200 ${mobileHomeExpanded ? 'rotate-180' : ''}`}>
+                          ▾
+                        </span>
+                      </button>
+                    </div>
+                    {mobileHomeExpanded && (
+                      <div className="pl-4 flex flex-col gap-0.5 mb-1">
+                        {children.map((sub) => (
+                          <a
+                            key={sub.label}
+                            href={sub.href}
+                            onClick={(e) => handleAnchorClick(e, sub.href)}
+                            className="py-2 text-sm text-muted"
+                          >
+                            {sub.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : isAnchor ? (
+                  <a
+                    href={href}
+                    onClick={(e) => handleAnchorClick(e, href)}
+                    className="block py-2.5 text-base font-medium text-ink"
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <Link to={href} className="block py-2.5 text-base font-medium text-ink">
+                    {label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
-          <a
-            href="/resume.pdf"
-            download
+          <button
+            onClick={() => { setMenuOpen(false); openModal() }}
             className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-ink text-paper text-sm font-medium rounded-full"
           >
-            Download Resume
-          </a>
+            View Resume
+          </button>
         </div>
       )}
     </header>

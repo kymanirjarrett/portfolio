@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useResumeModal } from '@/contexts/ResumeModalContext'
 
 const links = [
   {
@@ -25,10 +26,10 @@ const links = [
 
 export default function Contact() {
   const reduced = useReducedMotion()
+  const { openModal } = useResumeModal()
 
   return (
     <section id="contact" className="py-24 px-6 bg-ink text-paper relative overflow-hidden">
-      {/* Background glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -41,7 +42,7 @@ export default function Contact() {
         <motion.div
           initial={reduced ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.6 }}
           className="max-w-xl"
         >
@@ -75,22 +76,12 @@ export default function Contact() {
             ))}
           </ul>
 
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="/resume.pdf"
-              download
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-medium rounded-full hover:bg-accent/90 transition-colors"
-            >
-              Download Resume
-            </a>
-            <a
-              href="/cv.pdf"
-              download
-              className="inline-flex items-center gap-2 px-6 py-3 border border-paper/20 text-paper/70 font-medium rounded-full hover:border-paper/40 hover:text-paper transition-colors"
-            >
-              Full CV
-            </a>
-          </div>
+          <button
+            onClick={openModal}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-medium rounded-full hover:bg-accent/90 transition-colors"
+          >
+            View Resume
+          </button>
         </motion.div>
       </div>
     </section>
