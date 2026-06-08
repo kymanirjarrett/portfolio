@@ -6,6 +6,7 @@ export interface Project {
   problem: string
   stack: string[]
   links: { label: string; href: string }[]
+  liveUrl: string | null
   featured: boolean
 }
 
@@ -22,6 +23,7 @@ export const projects: Project[] = [
     links: [
       { label: 'GitHub', href: 'https://github.com/kymanirjarrett/vigil' },
     ],
+    liveUrl: 'https://vigil-three-amber.vercel.app',
     featured: true,
   },
   {
@@ -36,6 +38,7 @@ export const projects: Project[] = [
     links: [
       { label: 'GitHub', href: 'https://github.com/kymanirjarrett/clausify' },
     ],
+    liveUrl: null,
     featured: true,
   },
   {
@@ -48,6 +51,7 @@ export const projects: Project[] = [
       'Manual paper-based recruitment tracking created attribution gaps and bottlenecks. This pipeline made onboarding instant and fully auditable.',
     stack: ['Microsoft Power Automate', 'SharePoint', 'Excel', 'QR Code Attribution'],
     links: [],
+    liveUrl: null,
     featured: false,
   },
 ]

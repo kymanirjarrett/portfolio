@@ -93,6 +93,14 @@ export default function ProjectsPage() {
                         </p>
                       </div>
                     </div>
+                    {/* Case study link — top right */}
+                    <Link
+                      to={`/projects/${project.id}`}
+                      className="flex-shrink-0 w-9 h-9 rounded-full border border-ink/10 flex items-center justify-center text-muted hover:text-ink hover:border-ink/25 transition-colors ml-4"
+                      aria-label={`${project.title} case study`}
+                    >
+                      <ArrowUpRight size={16} />
+                    </Link>
                   </div>
 
                   <p className="text-muted leading-relaxed mb-6">{project.description}</p>
@@ -106,13 +114,21 @@ export default function ProjectsPage() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3">
-                    <Link
-                      to={`/projects/${project.id}`}
-                      className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-full transition-colors"
-                      style={{ background: accent }}
-                    >
-                      Case study <ArrowUpRight size={14} />
-                    </Link>
+                    {project.liveUrl ? (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white rounded-full transition-opacity hover:opacity-90"
+                        style={{ background: accent }}
+                      >
+                        Live site <ExternalLink size={13} />
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-muted rounded-full border border-ink/10 cursor-default">
+                        Deploying soon
+                      </span>
+                    )}
                     {project.links.map(({ label, href }) => (
                       <a
                         key={label}
