@@ -63,7 +63,7 @@ export default function About() {
           <div className="col-span-2 bg-ink rounded-2xl p-6 text-paper">
             <p className="font-mono text-xs text-paper/40 uppercase tracking-widest mb-2">University</p>
             <p className="font-display font-semibold text-xl leading-tight">
-              B.S. Information Technology<br />B.S. Cybersecurity
+              B.Sc. Information Technology<br />B.Sc. Cybersecurity
             </p>
             <p className="text-paper/60 text-sm mt-2">University of Cincinnati</p>
           </div>

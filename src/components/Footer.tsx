@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         <div>
           <p className="font-display font-semibold text-lg mb-1">Kymani Jarrett</p>
-          <p className="text-paper/50 text-sm">University of Cincinnati · B.S. IT & Cybersecurity</p>
+          <p className="text-paper/50 text-sm">University of Cincinnati · B.Sc. IT & Cybersecurity</p>
         </div>
 
         <nav aria-label="Footer links">
