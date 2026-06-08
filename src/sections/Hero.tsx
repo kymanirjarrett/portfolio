@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import RotatingDescriptor from '@/components/RotatingDescriptor'
 import { useWebGL } from '@/hooks/useWebGL'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useResumeModal } from '@/contexts/ResumeModalContext'
 import { sphereLogos } from '@/data/skills'
 
 const TechSphere = lazy(() => import('@/components/TechSphere'))
@@ -51,6 +52,7 @@ function ScrollCue({ reduced }: { reduced: boolean }) {
 export default function Hero() {
   const webGL = useWebGL()
   const reduced = useReducedMotion()
+  const { openModal } = useResumeModal()
 
   const fadeUp = (delay: number) =>
     reduced
@@ -136,9 +138,9 @@ export default function Hero() {
               >
                 LinkedIn ↗
               </a>
-              <a href="/resume.pdf" download className="hover:text-ink transition-colors">
+              <button onClick={openModal} className="hover:text-ink transition-colors">
                 Resume ↓
-              </a>
+              </button>
             </motion.div>
           </div>
 

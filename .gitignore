@@ -30,3 +30,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Private documents
+public/cv.pdf
+reference/Kymani_Jarrett_Curriculum_Vitae.pdf

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useResumeModal } from '@/contexts/ResumeModalContext'
 
 const navLinks = [
-  { label: 'Work', href: '/#work' },
-  { label: 'Experience', href: '/#experience' },
-  { label: 'Skills', href: '/#skills' },
-  { label: 'About', href: '/#about' },
+  { label: 'Work', href: '/#work', isAnchor: true },
+  { label: 'Experience', href: '/experience', isAnchor: false },
+  { label: 'Leadership', href: '/leadership', isAnchor: false },
+  { label: 'Skills', href: '/#skills', isAnchor: true },
+  { label: 'About', href: '/#about', isAnchor: true },
 ]
 
 export default function Nav() {
@@ -14,6 +16,7 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const reduced = useReducedMotion()
+  const { openModal } = useResumeModal()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32)
@@ -36,7 +39,7 @@ export default function Nav() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled ? 'bg-paper/90 backdrop-blur-md border-b border-ink/5 shadow-sm' : 'bg-transparent'
       }`}
       role="banner"
@@ -50,17 +53,27 @@ export default function Nav() {
           KJ
         </Link>
 
-        {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-8" role="list">
-          {navLinks.map(({ label, href }) => (
+        <ul className="hidden md:flex items-center gap-6" role="list">
+          {navLinks.map(({ label, href, isAnchor }) => (
             <li key={label}>
-              <a
-                href={href}
-                onClick={(e) => handleAnchorClick(e, href)}
-                className="text-sm font-medium text-muted hover:text-ink transition-colors"
-              >
-                {label}
-              </a>
+              {isAnchor ? (
+                <a
+                  href={href}
+                  onClick={(e) => handleAnchorClick(e, href)}
+                  className="text-sm font-medium text-muted hover:text-ink transition-colors"
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  to={href}
+                  className={`text-sm font-medium transition-colors ${
+                    location.pathname === href ? 'text-ink' : 'text-muted hover:text-ink'
+                  }`}
+                >
+                  {label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>
@@ -75,16 +88,14 @@ export default function Nav() {
           >
             GitHub
           </a>
-          <a
-            href="/resume.pdf"
-            download
+          <button
+            onClick={openModal}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-ink text-paper text-sm font-medium rounded-full hover:bg-ink/80 transition-colors"
           >
             Resume
-          </a>
+          </button>
         </div>
 
-        {/* Mobile menu button */}
         <button
           className="md:hidden p-2 text-ink"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -97,29 +108,33 @@ export default function Nav() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-paper border-t border-ink/5 px-6 py-6">
           <ul className="flex flex-col gap-4 mb-6" role="list">
-            {navLinks.map(({ label, href }) => (
+            {navLinks.map(({ label, href, isAnchor }) => (
               <li key={label}>
-                <a
-                  href={href}
-                  onClick={(e) => handleAnchorClick(e, href)}
-                  className="text-base font-medium text-ink"
-                >
-                  {label}
-                </a>
+                {isAnchor ? (
+                  <a
+                    href={href}
+                    onClick={(e) => handleAnchorClick(e, href)}
+                    className="text-base font-medium text-ink"
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <Link to={href} className="text-base font-medium text-ink">
+                    {label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
-          <a
-            href="/resume.pdf"
-            download
+          <button
+            onClick={() => { setMenuOpen(false); openModal() }}
             className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-ink text-paper text-sm font-medium rounded-full"
           >
-            Download Resume
-          </a>
+            View Resume
+          </button>
         </div>
       )}
     </header>
