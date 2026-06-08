@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const navLinks = [
   { label: 'Work', href: '/#work' },
@@ -12,6 +13,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const reduced = useReducedMotion()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32)
@@ -26,8 +28,9 @@ export default function Nav() {
   function handleAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
     if (href.startsWith('/#') && location.pathname === '/') {
       e.preventDefault()
+      setMenuOpen(false)
       const id = href.slice(2)
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
     }
   }
 

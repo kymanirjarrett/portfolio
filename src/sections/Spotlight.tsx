@@ -13,6 +13,7 @@ export default function Spotlight() {
   const reduced = useReducedMotion()
   const navigate = useNavigate()
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const totalTiles = spotlightTiles.length
 
   const advance = useCallback((dir: 1 | -1) => {
@@ -25,19 +26,36 @@ export default function Spotlight() {
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [active, paused, reduced, advance])
 
-  function handleTileClick(tile: (typeof spotlightTiles)[0]) {
+  function handleTileAction(tile: (typeof spotlightTiles)[0]) {
     if (tile.isRoute) {
       navigate(tile.href)
     } else {
       const id = tile.href.slice(1)
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent, tile: (typeof spotlightTiles)[0]) {
+  function handleTileKeyDown(e: React.KeyboardEvent, tile: (typeof spotlightTiles)[0]) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      handleTileClick(tile)
+      handleTileAction(tile)
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      advance(-1)
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      advance(1)
+    }
+  }
+
+  function handleSectionFocusIn() {
+    setPaused(true)
+  }
+
+  function handleSectionFocusOut(e: React.FocusEvent<HTMLElement>) {
+    // Only unpause when focus leaves the section entirely
+    if (!sectionRef.current?.contains(e.relatedTarget as Node)) {
+      setPaused(false)
     }
   }
 
@@ -46,12 +64,13 @@ export default function Spotlight() {
   return (
     <section
       id="spotlight"
+      ref={sectionRef}
       className="bg-paper py-24 px-6"
       aria-label="Spotlight reel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      onFocusCapture={handleSectionFocusIn}
+      onBlurCapture={handleSectionFocusOut}
     >
       <div className="max-w-6xl mx-auto">
         <p className="font-mono text-xs text-muted uppercase tracking-widest mb-4">Spotlight</p>
@@ -66,11 +85,11 @@ export default function Spotlight() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="w-full rounded-2xl overflow-hidden cursor-pointer group"
             style={{ background: `linear-gradient(135deg, ${activeTile.accentColor}18 0%, ${activeTile.accentColor}08 100%)` }}
-            onClick={() => handleTileClick(activeTile)}
-            onKeyDown={(e) => handleKeyDown(e, activeTile)}
+            onClick={() => handleTileAction(activeTile)}
+            onKeyDown={(e) => handleTileKeyDown(e, activeTile)}
             tabIndex={0}
             role="button"
-            aria-label={`${activeTile.title}: ${activeTile.subtitle} — ${activeTile.description}. Click to learn more.`}
+            aria-label={`${activeTile.title}: ${activeTile.subtitle} — ${activeTile.description}. Press Enter to open.`}
           >
             <div
               className="p-8 md:p-12 border rounded-2xl border-ink/8 transition-all duration-300 group-hover:border-opacity-100"
@@ -89,10 +108,7 @@ export default function Spotlight() {
                 </div>
                 <div
                   className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border transition-colors group-hover:text-white"
-                  style={{
-                    borderColor: activeTile.accentColor,
-                    color: activeTile.accentColor,
-                  }}
+                  style={{ borderColor: activeTile.accentColor, color: activeTile.accentColor }}
                 >
                   {activeTile.isRoute ? 'Case study ↗' : 'View section ↓'}
                 </div>
@@ -102,14 +118,14 @@ export default function Spotlight() {
 
           {/* Controls */}
           <div className="flex items-center justify-between mt-6">
-            <div className="flex gap-2" role="tablist" aria-label="Spotlight navigation">
+            {/* Dot indicators — plain buttons, not tab role */}
+            <div className="flex gap-2" aria-label="Spotlight position" role="group">
               {spotlightTiles.map((tile, i) => (
                 <button
                   key={tile.id}
                   onClick={() => setActive(i)}
-                  role="tab"
-                  aria-selected={i === active}
-                  aria-label={tile.title}
+                  aria-label={`Slide ${i + 1} of ${totalTiles}: ${tile.title}`}
+                  aria-current={i === active ? 'true' : undefined}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
                     i === active ? 'w-8 bg-ink' : 'w-1.5 bg-ink/20 hover:bg-ink/40'
                   }`}
@@ -148,6 +164,7 @@ export default function Spotlight() {
                     : 'border-transparent hover:border-ink/10 hover:bg-white/60'
                 }`}
                 aria-label={`Go to ${tile.title}`}
+                aria-current={i === active ? 'true' : undefined}
               >
                 <div
                   className="w-5 h-5 rounded-md mb-2"

@@ -9,20 +9,6 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 const SPHERE_RADIUS = 2.2
 
 function LogoSprite({ position, name, slug }: { position: [number, number, number]; name: string; slug: string }) {
-  const meshRef = useRef<THREE.Mesh>(null)
-
-  useFrame(({ clock }) => {
-    if (meshRef.current) {
-      meshRef.current.position.set(
-        position[0] * SPHERE_RADIUS,
-        position[1] * SPHERE_RADIUS,
-        position[2] * SPHERE_RADIUS,
-      )
-      const pulse = 0.9 + Math.sin(clock.getElapsedTime() * 0.5 + position[0] * 3) * 0.05
-      meshRef.current.scale.setScalar(pulse)
-    }
-  })
-
   return (
     <Billboard position={[position[0] * SPHERE_RADIUS, position[1] * SPHERE_RADIUS, position[2] * SPHERE_RADIUS]}>
       <Html
@@ -30,11 +16,7 @@ function LogoSprite({ position, name, slug }: { position: [number, number, numbe
         style={{ pointerEvents: 'none', userSelect: 'none' }}
         distanceFactor={6}
       >
-        <div
-          className="w-10 h-10 flex items-center justify-center"
-          title={name}
-          aria-label={name}
-        >
+        <div className="w-10 h-10 flex items-center justify-center" title={name} aria-label={name}>
           <img
             src={`https://cdn.simpleicons.org/${slug}/3B49DF`}
             alt={name}
@@ -88,12 +70,7 @@ function Scene() {
       <pointLight position={[-5, -5, 5]} intensity={0.3} color="#FF7A45" />
       <SphereGroup />
       {!reduced && (
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          rotateSpeed={0.4}
-          autoRotate={false}
-        />
+        <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.4} autoRotate={false} />
       )}
     </>
   )
@@ -101,10 +78,7 @@ function Scene() {
 
 function FallbackGrid() {
   return (
-    <div
-      className="grid grid-cols-4 gap-4 p-8"
-      aria-label="Technology logos"
-    >
+    <div className="grid grid-cols-4 gap-4 p-8" aria-label="Technology logos">
       {sphereLogos.map((logo) => (
         <div key={logo.slug} className="flex flex-col items-center gap-1" title={logo.name}>
           <img

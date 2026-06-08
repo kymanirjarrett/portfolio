@@ -20,7 +20,7 @@ function FallbackLoading() {
   )
 }
 
-function ScrollCue() {
+function ScrollCue({ reduced }: { reduced: boolean }) {
   const [visible, setVisible] = useState(true)
 
   useEffect(() => {
@@ -32,17 +32,19 @@ function ScrollCue() {
   if (!visible) return null
 
   return (
-    <motion.div
+    <div
       className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 1.4, duration: 0.6 }}
+      aria-hidden
     >
       <span className="text-xs font-mono uppercase tracking-widest">Scroll</span>
-      <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}>
+      {reduced ? (
         <ChevronDown size={16} />
-      </motion.div>
-    </motion.div>
+      ) : (
+        <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}>
+          <ChevronDown size={16} />
+        </motion.div>
+      )}
+    </div>
   )
 }
 
@@ -54,6 +56,11 @@ export default function Hero() {
     reduced
       ? {}
       : { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, delay, ease: 'easeOut' } }
+
+  function scrollToSpotlight(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault()
+    document.getElementById('spotlight')?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+  }
 
   return (
     <section
@@ -99,10 +106,7 @@ export default function Hero() {
             <motion.div className="flex flex-wrap gap-3 pt-2" {...fadeUp(0.5)}>
               <a
                 href="#spotlight"
-                onClick={(e) => {
-                  e.preventDefault()
-                  document.getElementById('spotlight')?.scrollIntoView({ behavior: 'smooth' })
-                }}
+                onClick={scrollToSpotlight}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-medium rounded-full hover:bg-accent/90 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 View my work
@@ -150,7 +154,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <ScrollCue />
+      <ScrollCue reduced={reduced} />
     </section>
   )
 }
