@@ -87,13 +87,15 @@ export default function ExperiencePage() {
                   ))}
                 </ul>
 
-                <div className="flex flex-wrap gap-2">
-                  {item.stack.map((tech) => (
-                    <span key={tech} className="text-xs font-mono px-2.5 py-1 rounded-full bg-accent/8 text-accent">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                {item.stack.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {item.stack.map((tech) => (
+                      <span key={tech} className="text-xs font-mono px-2.5 py-1 rounded-full bg-accent/8 text-accent">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </motion.article>
             ))}
 

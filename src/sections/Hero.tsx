@@ -64,6 +64,11 @@ export default function Hero() {
     document.getElementById('spotlight')?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
   }
 
+  function scrollToContact(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault()
+    document.getElementById('contact')?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+  }
+
   return (
     <section
       className="relative min-h-screen w-full overflow-hidden grain"
@@ -114,7 +119,8 @@ export default function Hero() {
                 View my work
               </a>
               <a
-                href="mailto:jarretkr@mail.uc.edu"
+                href="#contact"
+                onClick={scrollToContact}
                 className="inline-flex items-center gap-2 px-6 py-3 border border-ink/15 text-ink font-medium rounded-full hover:bg-ink hover:text-paper transition-colors"
               >
                 Get in touch

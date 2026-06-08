@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ChevronDown } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useResumeModal } from '@/contexts/ResumeModalContext'
 
@@ -19,8 +18,8 @@ const navLinks: NavLink[] = [
     href: '/',
     isAnchor: false,
     children: [
-      { label: 'Skills', href: '/#skills' },
       { label: 'About', href: '/#about' },
+      { label: 'Skills', href: '/#skills' },
     ],
   },
   { label: 'Experience', href: '/experience', isAnchor: false },
@@ -31,11 +30,10 @@ const navLinks: NavLink[] = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [homeExpanded, setHomeExpanded] = useState(false)
+  const [mobileHomeExpanded, setMobileHomeExpanded] = useState(false)
   const location = useLocation()
   const reduced = useReducedMotion()
   const { openModal } = useResumeModal()
-  const dropdownRef = useRef<HTMLLIElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32)
@@ -45,46 +43,22 @@ export default function Nav() {
 
   useEffect(() => {
     setMenuOpen(false)
-    setHomeExpanded(false)
+    setMobileHomeExpanded(false)
   }, [location])
-
-  useEffect(() => {
-    function onClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setHomeExpanded(false)
-      }
-    }
-    if (homeExpanded) document.addEventListener('mousedown', onClickOutside)
-    return () => document.removeEventListener('mousedown', onClickOutside)
-  }, [homeExpanded])
 
   function scrollTo(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
   }
 
   function handleAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-    const id = href.replace(/^\/#/, '')
     if (href.startsWith('/#')) {
       e.preventDefault()
       setMenuOpen(false)
       if (location.pathname === '/') {
-        scrollTo(id)
+        scrollTo(href.slice(2))
       } else {
-        // navigate to home then scroll after load
         window.location.href = href
       }
-    }
-  }
-
-  function handleSubLinkClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-    const id = href.replace(/^\/#/, '')
-    e.preventDefault()
-    setHomeExpanded(false)
-    setMenuOpen(false)
-    if (location.pathname === '/') {
-      scrollTo(id)
-    } else {
-      window.location.href = href
     }
   }
 
@@ -107,50 +81,33 @@ export default function Nav() {
         {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-6" role="list">
           {navLinks.map(({ label, href, isAnchor, children }) => (
-            <li key={label} className="relative" ref={children ? dropdownRef : undefined}>
+            <li key={label} className="relative group">
               {children ? (
-                /* Home with dropdown */
-                <div className="relative group">
-                  <button
-                    onClick={() => setHomeExpanded((v) => !v)}
-                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                /* Home — click navigates, hover reveals dropdown */
+                <>
+                  <Link
+                    to={href}
+                    className={`text-sm font-medium transition-colors ${
                       location.pathname === '/' ? 'text-ink' : 'text-muted hover:text-ink'
                     }`}
-                    aria-expanded={homeExpanded}
-                    aria-haspopup="true"
                   >
                     {label}
-                    <ChevronDown
-                      size={13}
-                      className={`transition-transform duration-200 ${homeExpanded ? 'rotate-180' : ''}`}
-                      aria-hidden
-                    />
-                  </button>
-
-                  {homeExpanded && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50">
-                      <div className="bg-paper rounded-xl shadow-lg border border-ink/8 py-1.5 min-w-[120px]">
-                        <Link
-                          to="/"
+                  </Link>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-150 z-50">
+                    <div className="bg-paper rounded-xl shadow-lg border border-ink/8 py-1.5 min-w-[110px]">
+                      {children.map((sub) => (
+                        <a
+                          key={sub.label}
+                          href={sub.href}
+                          onClick={(e) => handleAnchorClick(e, sub.href)}
                           className="block px-4 py-2 text-sm text-muted hover:text-ink hover:bg-ink/4 transition-colors"
-                          onClick={() => setHomeExpanded(false)}
                         >
-                          Home
-                        </Link>
-                        {children.map((sub) => (
-                          <a
-                            key={sub.label}
-                            href={sub.href}
-                            onClick={(e) => handleSubLinkClick(e, sub.href)}
-                            className="block px-4 py-2 text-sm text-muted hover:text-ink hover:bg-ink/4 transition-colors"
-                          >
-                            {sub.label}
-                          </a>
-                        ))}
-                      </div>
+                          {sub.label}
+                        </a>
+                      ))}
                     </div>
-                  )}
-                </div>
+                  </div>
+                </>
               ) : isAnchor ? (
                 <a
                   href={href}
@@ -198,9 +155,9 @@ export default function Nav() {
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((v) => !v)}
         >
-          <span className="block w-5 h-px bg-current mb-1.5 transition-all" />
-          <span className="block w-5 h-px bg-current mb-1.5 transition-all" />
-          <span className="block w-5 h-px bg-current transition-all" />
+          <span className="block w-5 h-px bg-current mb-1.5" />
+          <span className="block w-5 h-px bg-current mb-1.5" />
+          <span className="block w-5 h-px bg-current" />
         </button>
       </nav>
 
@@ -212,31 +169,31 @@ export default function Nav() {
               <li key={label}>
                 {children ? (
                   <div>
-                    <button
-                      onClick={() => setHomeExpanded((v) => !v)}
-                      className="flex items-center gap-1 py-2.5 text-base font-medium text-ink w-full"
-                    >
-                      {label}
-                      <ChevronDown
-                        size={14}
-                        className={`transition-transform duration-200 ${homeExpanded ? 'rotate-180' : ''}`}
-                        aria-hidden
-                      />
-                    </button>
-                    {homeExpanded && (
+                    <div className="flex items-center justify-between">
+                      <Link
+                        to={href}
+                        className="py-2.5 text-base font-medium text-ink"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                      <button
+                        onClick={() => setMobileHomeExpanded((v) => !v)}
+                        className="p-2 text-muted"
+                        aria-label="Toggle sub-links"
+                      >
+                        <span className={`block transition-transform duration-200 ${mobileHomeExpanded ? 'rotate-180' : ''}`}>
+                          ▾
+                        </span>
+                      </button>
+                    </div>
+                    {mobileHomeExpanded && (
                       <div className="pl-4 flex flex-col gap-0.5 mb-1">
-                        <Link
-                          to="/"
-                          className="py-2 text-sm text-muted"
-                          onClick={() => { setMenuOpen(false); setHomeExpanded(false) }}
-                        >
-                          Home
-                        </Link>
                         {children.map((sub) => (
                           <a
                             key={sub.label}
                             href={sub.href}
-                            onClick={(e) => handleSubLinkClick(e, sub.href)}
+                            onClick={(e) => handleAnchorClick(e, sub.href)}
                             className="py-2 text-sm text-muted"
                           >
                             {sub.label}
@@ -254,10 +211,7 @@ export default function Nav() {
                     {label}
                   </a>
                 ) : (
-                  <Link
-                    to={href}
-                    className="block py-2.5 text-base font-medium text-ink"
-                  >
+                  <Link to={href} className="block py-2.5 text-base font-medium text-ink">
                     {label}
                   </Link>
                 )}
