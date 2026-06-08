@@ -15,19 +15,27 @@ const viewport = { once: false, amount: 0.15 }
 export default function Work() {
   const reduced = useReducedMotion()
   const featured = projects.filter((p) => p.featured)
-  const bearcat = projects.find((p) => p.id === 'bearcat-buddies')!
 
   return (
     <section id="projects" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
+          className="flex items-end justify-between mb-12"
           {...(reduced ? {} : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport, transition: { duration: 0.5 } })}
         >
-          <p className="font-mono text-xs text-muted uppercase tracking-widest mb-4">Projects</p>
-          <h2 className="font-display font-bold text-3xl md:text-4xl text-ink mb-12">Built for real problems</h2>
+          <div>
+            <p className="font-mono text-xs text-muted uppercase tracking-widest mb-3">Projects</p>
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-ink">Built for real problems</h2>
+          </div>
+          <Link
+            to="/projects"
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent/70 transition-colors flex-shrink-0 ml-8"
+          >
+            Browse all <ArrowUpRight size={14} />
+          </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {featured.map((project, i) => {
             const accent = accentColors[project.id] ?? '#3B49DF'
             return (
@@ -37,7 +45,7 @@ export default function Work() {
               >
                 <Link
                   to={`/projects/${project.id}`}
-                  className="group block h-full rounded-2xl border border-ink/8 bg-white/70 backdrop-blur-sm p-8 hover:shadow-lg hover:border-opacity-100 transition-all duration-300"
+                  className="group block h-full rounded-2xl border border-ink/8 bg-white/70 backdrop-blur-sm p-8 hover:shadow-lg transition-all duration-300"
                   aria-label={`${project.title}: ${project.tagline}`}
                 >
                   <div className="flex items-start justify-between mb-6">
@@ -61,7 +69,7 @@ export default function Work() {
                   </p>
                   <p className="text-muted text-sm leading-relaxed mb-4">{project.problem}</p>
 
-                  <div className="flex flex-wrap gap-2 mt-auto">
+                  <div className="flex flex-wrap gap-2">
                     {project.stack.slice(0, 5).map((tech) => (
                       <span key={tech} className="text-xs font-mono px-2.5 py-1 rounded-full bg-ink/5 text-muted">
                         {tech}
@@ -80,33 +88,15 @@ export default function Work() {
         </div>
 
         <motion.div
-          {...(reduced ? {} : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport, transition: { duration: 0.5, delay: 0.15 } })}
+          className="text-center sm:hidden"
+          {...(reduced ? {} : { initial: { opacity: 0, y: 16 }, whileInView: { opacity: 1, y: 0 }, viewport, transition: { duration: 0.4, delay: 0.2 } })}
         >
-          <div className="rounded-2xl border border-ink/8 bg-white/70 backdrop-blur-sm p-6 md:flex md:items-center md:gap-8">
-            <div
-              className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-white font-display font-bold mb-4 md:mb-0"
-              style={{ background: accentColors['bearcat-buddies'] }}
-              aria-hidden
-            >
-              B
-            </div>
-            <div className="flex-1">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-display font-semibold text-xl text-ink">{bearcat.title}</h3>
-                  <p className="font-mono text-xs uppercase tracking-widest text-muted mt-0.5">{bearcat.tagline}</p>
-                </div>
-              </div>
-              <p className="text-muted text-sm leading-relaxed mt-3">{bearcat.problem}</p>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-4 md:mt-0 md:flex-col md:items-end">
-              {bearcat.stack.slice(0, 3).map((tech) => (
-                <span key={tech} className="text-xs font-mono px-2.5 py-1 rounded-full bg-ink/5 text-muted">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
+          <Link
+            to="/projects"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-ink text-paper text-sm font-medium rounded-full hover:bg-ink/80 transition-colors"
+          >
+            Browse all projects <ArrowUpRight size={14} />
+          </Link>
         </motion.div>
       </div>
     </section>

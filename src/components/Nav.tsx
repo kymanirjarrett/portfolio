@@ -23,7 +23,7 @@ const navLinks: NavLink[] = [
     ],
   },
   { label: 'Experience', href: '/experience', isAnchor: false },
-  { label: 'Projects', href: '/#projects', isAnchor: true },
+  { label: 'Projects', href: '/projects', isAnchor: false },
   { label: 'Leadership', href: '/leadership', isAnchor: false },
 ]
 
