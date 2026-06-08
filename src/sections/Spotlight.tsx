@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { spotlightTiles } from '@/data/spotlight'
@@ -137,29 +137,29 @@ export default function Spotlight() {
         </div>
 
         {/* Thumbnail strip */}
-        <div className="mt-8 grid grid-cols-3 md:grid-cols-6 gap-3" role="list">
+        <ul className="mt-8 grid grid-cols-3 md:grid-cols-6 gap-3" role="list">
           {spotlightTiles.map((tile, i) => (
-            <button
-              key={tile.id}
-              onClick={() => setActive(i)}
-              className={`p-3 rounded-xl border text-left transition-all duration-200 ${
-                i === active
-                  ? 'border-ink/20 bg-white shadow-sm'
-                  : 'border-transparent hover:border-ink/10 hover:bg-white/60'
-              }`}
-              aria-label={`Go to ${tile.title}`}
-              role="listitem"
-            >
-              <div
-                className="w-5 h-5 rounded-md mb-2"
-                style={{ background: `${tile.accentColor}30` }}
-                aria-hidden
-              />
-              <p className="text-xs font-medium text-ink leading-tight">{tile.title}</p>
-              <p className="text-xs text-muted leading-tight mt-0.5 hidden md:block">{tile.subtitle}</p>
-            </button>
+            <li key={tile.id}>
+              <button
+                onClick={() => setActive(i)}
+                className={`w-full p-3 rounded-xl border text-left transition-all duration-200 ${
+                  i === active
+                    ? 'border-ink/20 bg-white shadow-sm'
+                    : 'border-transparent hover:border-ink/10 hover:bg-white/60'
+                }`}
+                aria-label={`Go to ${tile.title}`}
+              >
+                <div
+                  className="w-5 h-5 rounded-md mb-2"
+                  style={{ background: `${tile.accentColor}30` }}
+                  aria-hidden
+                />
+                <p className="text-xs font-medium text-ink leading-tight">{tile.title}</p>
+                <p className="text-xs text-muted leading-tight mt-0.5 hidden md:block">{tile.subtitle}</p>
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

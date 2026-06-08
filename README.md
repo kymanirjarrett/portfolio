@@ -1,146 +1,112 @@
-# Professional Software Engineer Portfolio
+# Kymani Jarrett — Portfolio
 
-A modern, responsive portfolio website built with React and Tailwind CSS. Features smooth animations, clean design, and optimized performance.
+Personal portfolio site for Kymani Jarrett — Cloud & Data Engineer, Full-Stack Developer, Cybersecurity student at the University of Cincinnati.
 
-![Portfolio Preview](https://via.placeholder.com/800x400?text=Portfolio+Preview)
-
-## 🚀 Features
-
-- ✨ Modern, professional design with gradient effects
-- 📱 Fully responsive across all devices
-- 🎯 Smooth scroll navigation
-- 💫 Subtle animations and hover effects
-- ⚡ Fast performance and optimized loading
-- 🎨 Clean, maintainable code structure
-- 📊 Easy to customize and extend
-
-## 🛠️ Built With
-
-- **React** - Frontend library
-- **Tailwind CSS** - Utility-first CSS framework
-- **Lucide React** - Beautiful icon library
-- **GitHub Pages** - Hosting platform
-
-## 📋 Sections
-
-1. **Hero** - Eye-catching introduction
-2. **About** - Personal introduction and highlights
-3. **Skills** - Technical expertise organized by category
-4. **Projects** - Featured work with links to code and demos
-5. **Experience** - Professional background
-6. **Contact** - Get in touch section
-
-## 🚦 Getting Started
-
-### Prerequisites
-
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
-```bash
-git clone https://github.com/kymanirjarrett/portfolio.git
-cd portfolio
-```
-
-2. Install dependencies
-```bash
-npm install
-```
-
-3. Start development server
-```bash
-npm start
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## 🎨 Customization
-
-### Update Personal Information
-
-Edit `src/components/Portfolio.jsx`:
-
-1. **Name & Title**: Change in the hero section
-2. **About**: Update the about section text
-3. **Skills**: Modify the `skills` array
-4. **Projects**: Update the `projects` array with your work
-5. **Experience**: Edit the `experience` array
-6. **Contact**: Update email and social links
-
-### Change Colors
-
-Modify Tailwind classes in `Portfolio.jsx`:
-- Primary: `blue-400`, `blue-500`, `blue-600`
-- Secondary: `purple-500`, `purple-600`
-- Accent: `pink-500`
-
-## 📦 Deployment to GitHub Pages
-
-1. Update `homepage` in `package.json`:
-```json
-"homepage": "https://kymanirjarrett.github.io/portfolio"
-```
-
-2. Install gh-pages:
-```bash
-npm install --save-dev gh-pages
-```
-
-3. Deploy:
-```bash
-npm run deploy
-```
-
-4. Enable GitHub Pages in repository settings (Settings → Pages → Source: gh-pages branch)
-
-## 🔧 Project Structure
-
-portfolio/
-├── public              # Static Files
-├── src/
-│   ├── components/      # React components
-│   │   └── Portfolio.jsx
-│   ├── App.js          # Main app component
-│   ├── App.css         # Global styles
-│   └── index.js        # Entry point
-├── package.json        # Dependencies
-└── tailwind.config.js  # Tailwind configuration
-
-## 📱 Responsive Design
-
-The portfolio is fully responsive and optimized for:
-- 📱 Mobile devices (320px+)
-- 💻 Tablets (768px+)
-- 🖥️ Desktops (1024px+)
-- 🖥️ Large screens (1440px+)
-
-## 🎯 Best Practices
-
-This portfolio follows:
-- ✅ Clean Architecture principles
-- ✅ Component-based structure
-- ✅ Semantic HTML
-- ✅ Accessible design
-- ✅ SEO optimization
-- ✅ Performance optimization
-
-## 🤝 Contributing
-
-Feel free to fork this project and customize it for your own use. If you find any bugs or have suggestions, please open an issue.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 📧 Contact
-
-Kymani Jarrett - [jarretkr@mail.uc.edu](mailto:jarretkr@mail.uc.edu)
-
-Project Link: [https://github.com/kymanirjarrett/portfolio](https://github.com/kymanirjarrett/portfolio)
+**Live:** [kymanirjarrett.vercel.app](https://kymanirjarrett.vercel.app)
 
 ---
 
-⭐ Star this repo if you find it helpful!
+## Stack
+
+| Concern   | Tech                                             |
+| --------- | ------------------------------------------------ |
+| Build     | Vite 6                                           |
+| Framework | React 18, TypeScript (strict)                    |
+| Styling   | Tailwind CSS                                     |
+| Routing   | React Router v7                                  |
+| 3D        | react-three-fiber + @react-three/drei (Three.js) |
+| Animation | Framer Motion                                    |
+| Icons     | Simple Icons (CDN), lucide-react                 |
+| Hosting   | Vercel                                           |
+| CI        | GitHub Actions                                   |
+| Tests     | Vitest + React Testing Library                   |
+
+---
+
+## Local setup
+
+```bash
+git clone https://github.com/kymanirjarrett/portfolio.git
+cd portfolio
+npm install
+npm run dev        # http://localhost:5173
+```
+
+Other commands:
+
+```bash
+npm run build      # production build → dist/
+npm run typecheck  # TypeScript strict check
+npm run lint       # ESLint
+npm run test       # Vitest (run once)
+npm run test:watch # Vitest watch mode
+npm run format     # Prettier
+```
+
+---
+
+## Project structure
+
+```text
+src/
+  components/   # Reusable UI: Nav, Footer, TechSphere, RotatingDescriptor
+  sections/     # Home page beats: Hero, Spotlight, About, Work,
+                #   Experience, Skills, Leadership, Contact
+  pages/        # Home, VigilCaseStudy, ClausifyCaseStudy (lazy-loaded)
+  data/         # Typed content modules — edit content here, not in JSX
+  hooks/        # useReducedMotion, useWebGL
+  lib/          # utils (cn, fibonacci3D)
+  test/         # Vitest + RTL tests
+
+public/
+  resume.pdf    # One-page resume (download link)
+  cv.pdf        # Full curriculum vitae
+  favicon.svg
+
+.github/workflows/ci.yml   # Lint + typecheck + test + build on every PR
+vercel.json                 # SPA rewrites + security headers
+```
+
+---
+
+## Routes
+
+| Route                | Description                       |
+| -------------------- | --------------------------------- |
+| `/`                  | Home — full-scroll, all sections  |
+| `/projects/vigil`    | Vigil case study (lazy-loaded)    |
+| `/projects/clausify` | Clausify case study (lazy-loaded) |
+
+---
+
+## Accessibility & motion
+
+- All animated elements respect `prefers-reduced-motion`: the 3D sphere, Spotlight reel, scroll reveals, and rotating descriptor each have static fallbacks.
+- The 3D sphere gracefully falls back to a 2D logo grid when WebGL is unavailable.
+- Semantic HTML, logical heading order, visible focus states, and keyboard navigation throughout.
+- Spotlight reel is fully keyboard-navigable (tab to tiles, arrow keys or buttons for prev/next).
+
+---
+
+## Deploying to Vercel
+
+1. Import the repo in [vercel.com/new](https://vercel.com/new).
+2. Framework preset: **Vite** (auto-detected).
+3. Build command: `npm run build` · Output directory: `dist`.
+4. The `vercel.json` in this repo handles SPA rewrites so deep links resolve correctly.
+
+To swap in a custom domain later, update the `canonical`, `og:url`, and `twitter:image` meta tags in `index.html` — they're the only hard-coded references to the domain.
+
+---
+
+## Content
+
+All content lives in typed data modules under `src/data/`. To update a job, project, or skill, edit the relevant file — no JSX changes needed.
+
+| File                 | Controls                                             |
+| -------------------- | ---------------------------------------------------- |
+| `data/projects.ts`   | Featured projects (Vigil, Clausify, Bearcat Buddies) |
+| `data/experience.ts` | Work history                                         |
+| `data/skills.ts`     | Skill grid + sphere logo list                        |
+| `data/leadership.ts` | Leadership & impact                                  |
+| `data/spotlight.ts`  | Spotlight reel tiles                                 |

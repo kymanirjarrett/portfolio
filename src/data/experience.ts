@@ -53,7 +53,7 @@ export const experience: ExperienceItem[] = [
     period: 'Jul 2025',
     featured: false,
     bullets: [
-      'Produced technical content for Handshake's student creator program.',
+      "Produced technical content for Handshake's student creator program.",
     ],
     stack: [],
   },
