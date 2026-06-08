@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import Hero from '@/sections/Hero'
 import Spotlight from '@/sections/Spotlight'
 import About from '@/sections/About'
@@ -7,6 +9,20 @@ import Contact from '@/sections/Contact'
 import Footer from '@/components/Footer'
 
 export default function Home() {
+  const location = useLocation()
+
+  useEffect(() => {
+    const target = (location.state as { scrollTo?: string } | null)?.scrollTo
+    if (!target) return
+    // Wait one frame for the DOM to settle after navigation before scrolling
+    const id = requestAnimationFrame(() => {
+      document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' })
+    })
+    // Clear the state so back-navigation doesn't re-trigger the scroll
+    window.history.replaceState({}, '')
+    return () => cancelAnimationFrame(id)
+  }, [location.state])
+
   return (
     <main id="main-content">
       <Hero />

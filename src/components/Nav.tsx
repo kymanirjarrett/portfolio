@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useResumeModal } from '@/contexts/ResumeModalContext'
 
@@ -32,6 +32,7 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobileHomeExpanded, setMobileHomeExpanded] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
   const reduced = useReducedMotion()
   const { openModal } = useResumeModal()
 
@@ -54,10 +55,11 @@ export default function Nav() {
     if (href.startsWith('/#')) {
       e.preventDefault()
       setMenuOpen(false)
+      const id = href.slice(2)
       if (location.pathname === '/') {
-        scrollTo(href.slice(2))
+        scrollTo(id)
       } else {
-        window.location.href = href
+        navigate('/', { state: { scrollTo: id } })
       }
     }
   }
@@ -83,7 +85,6 @@ export default function Nav() {
           {navLinks.map(({ label, href, isAnchor, children }) => (
             <li key={label} className="relative group">
               {children ? (
-                /* Home — click navigates, hover reveals dropdown */
                 <>
                   <Link
                     to={href}
@@ -120,7 +121,9 @@ export default function Nav() {
                 <Link
                   to={href}
                   className={`text-sm font-medium transition-colors ${
-                    location.pathname === href ? 'text-ink' : 'text-muted hover:text-ink'
+                    location.pathname === href || location.pathname.startsWith(href + '/')
+                      ? 'text-ink'
+                      : 'text-muted hover:text-ink'
                   }`}
                 >
                   {label}

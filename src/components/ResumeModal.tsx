@@ -3,6 +3,8 @@ import { X, Download } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
 interface ResumeModalProps {
   open: boolean
   onClose: () => void
@@ -10,6 +12,7 @@ interface ResumeModalProps {
 
 export default function ResumeModal({ open, onClose }: ResumeModalProps) {
   const reduced = useReducedMotion()
+  const dialogRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const isMobile = typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
 
@@ -17,14 +20,33 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
     if (!open) return
     const prev = document.activeElement as HTMLElement | null
     closeRef.current?.focus()
+    document.body.style.overflow = 'hidden'
 
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+      if (e.key !== 'Tab' || !dialogRef.current) return
+
+      const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE))
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault()
+          last?.focus()
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault()
+          first?.focus()
+        }
+      }
     }
 
     document.addEventListener('keydown', onKeyDown)
-    document.body.style.overflow = 'hidden'
-
     return () => {
       document.removeEventListener('keydown', onKeyDown)
       document.body.style.overflow = ''
@@ -49,6 +71,7 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
 
           {/* Modal */}
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="Resume preview"
