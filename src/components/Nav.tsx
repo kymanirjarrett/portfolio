@@ -1,22 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { ChevronDown } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useResumeModal } from '@/contexts/ResumeModalContext'
 
-const navLinks = [
-  { label: 'Work', href: '/#work', isAnchor: true },
+type SubLink = { label: string; href: string }
+
+type NavLink = {
+  label: string
+  href: string
+  isAnchor: boolean
+  children?: SubLink[]
+}
+
+const navLinks: NavLink[] = [
+  {
+    label: 'Home',
+    href: '/',
+    isAnchor: false,
+    children: [
+      { label: 'Skills', href: '/#skills' },
+      { label: 'About', href: '/#about' },
+    ],
+  },
   { label: 'Experience', href: '/experience', isAnchor: false },
+  { label: 'Projects', href: '/#projects', isAnchor: true },
   { label: 'Leadership', href: '/leadership', isAnchor: false },
-  { label: 'Skills', href: '/#skills', isAnchor: true },
-  { label: 'About', href: '/#about', isAnchor: true },
 ]
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [homeExpanded, setHomeExpanded] = useState(false)
   const location = useLocation()
   const reduced = useReducedMotion()
   const { openModal } = useResumeModal()
+  const dropdownRef = useRef<HTMLLIElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32)
@@ -26,14 +45,46 @@ export default function Nav() {
 
   useEffect(() => {
     setMenuOpen(false)
+    setHomeExpanded(false)
   }, [location])
 
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setHomeExpanded(false)
+      }
+    }
+    if (homeExpanded) document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [homeExpanded])
+
+  function scrollTo(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+  }
+
   function handleAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-    if (href.startsWith('/#') && location.pathname === '/') {
+    const id = href.replace(/^\/#/, '')
+    if (href.startsWith('/#')) {
       e.preventDefault()
       setMenuOpen(false)
-      const id = href.slice(2)
-      document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+      if (location.pathname === '/') {
+        scrollTo(id)
+      } else {
+        // navigate to home then scroll after load
+        window.location.href = href
+      }
+    }
+  }
+
+  function handleSubLinkClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    const id = href.replace(/^\/#/, '')
+    e.preventDefault()
+    setHomeExpanded(false)
+    setMenuOpen(false)
+    if (location.pathname === '/') {
+      scrollTo(id)
+    } else {
+      window.location.href = href
     }
   }
 
@@ -53,10 +104,54 @@ export default function Nav() {
           KJ
         </Link>
 
+        {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-6" role="list">
-          {navLinks.map(({ label, href, isAnchor }) => (
-            <li key={label}>
-              {isAnchor ? (
+          {navLinks.map(({ label, href, isAnchor, children }) => (
+            <li key={label} className="relative" ref={children ? dropdownRef : undefined}>
+              {children ? (
+                /* Home with dropdown */
+                <div className="relative group">
+                  <button
+                    onClick={() => setHomeExpanded((v) => !v)}
+                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                      location.pathname === '/' ? 'text-ink' : 'text-muted hover:text-ink'
+                    }`}
+                    aria-expanded={homeExpanded}
+                    aria-haspopup="true"
+                  >
+                    {label}
+                    <ChevronDown
+                      size={13}
+                      className={`transition-transform duration-200 ${homeExpanded ? 'rotate-180' : ''}`}
+                      aria-hidden
+                    />
+                  </button>
+
+                  {homeExpanded && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50">
+                      <div className="bg-paper rounded-xl shadow-lg border border-ink/8 py-1.5 min-w-[120px]">
+                        <Link
+                          to="/"
+                          className="block px-4 py-2 text-sm text-muted hover:text-ink hover:bg-ink/4 transition-colors"
+                          onClick={() => setHomeExpanded(false)}
+                        >
+                          Home
+                        </Link>
+                        {children.map((sub) => (
+                          <a
+                            key={sub.label}
+                            href={sub.href}
+                            onClick={(e) => handleSubLinkClick(e, sub.href)}
+                            className="block px-4 py-2 text-sm text-muted hover:text-ink hover:bg-ink/4 transition-colors"
+                          >
+                            {sub.label}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : isAnchor ? (
                 <a
                   href={href}
                   onClick={(e) => handleAnchorClick(e, href)}
@@ -96,6 +191,7 @@ export default function Nav() {
           </button>
         </div>
 
+        {/* Mobile hamburger */}
         <button
           className="md:hidden p-2 text-ink"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -108,21 +204,60 @@ export default function Nav() {
         </button>
       </nav>
 
+      {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-paper border-t border-ink/5 px-6 py-6">
-          <ul className="flex flex-col gap-4 mb-6" role="list">
-            {navLinks.map(({ label, href, isAnchor }) => (
+          <ul className="flex flex-col gap-1 mb-6" role="list">
+            {navLinks.map(({ label, href, isAnchor, children }) => (
               <li key={label}>
-                {isAnchor ? (
+                {children ? (
+                  <div>
+                    <button
+                      onClick={() => setHomeExpanded((v) => !v)}
+                      className="flex items-center gap-1 py-2.5 text-base font-medium text-ink w-full"
+                    >
+                      {label}
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 ${homeExpanded ? 'rotate-180' : ''}`}
+                        aria-hidden
+                      />
+                    </button>
+                    {homeExpanded && (
+                      <div className="pl-4 flex flex-col gap-0.5 mb-1">
+                        <Link
+                          to="/"
+                          className="py-2 text-sm text-muted"
+                          onClick={() => { setMenuOpen(false); setHomeExpanded(false) }}
+                        >
+                          Home
+                        </Link>
+                        {children.map((sub) => (
+                          <a
+                            key={sub.label}
+                            href={sub.href}
+                            onClick={(e) => handleSubLinkClick(e, sub.href)}
+                            className="py-2 text-sm text-muted"
+                          >
+                            {sub.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : isAnchor ? (
                   <a
                     href={href}
                     onClick={(e) => handleAnchorClick(e, href)}
-                    className="text-base font-medium text-ink"
+                    className="block py-2.5 text-base font-medium text-ink"
                   >
                     {label}
                   </a>
                 ) : (
-                  <Link to={href} className="text-base font-medium text-ink">
+                  <Link
+                    to={href}
+                    className="block py-2.5 text-base font-medium text-ink"
+                  >
                     {label}
                   </Link>
                 )}

@@ -59,7 +59,7 @@ export const spotlightTiles: SpotlightTile[] = [
     title: 'Bearcat Buddies',
     subtitle: 'Recruitment Automation',
     description: 'Power Automate pipeline replacing paper processes — QR attribution, auto emails, SharePoint dashboards.',
-    href: '#work',
+    href: '#projects',
     isRoute: false,
     accentColor: '#E11D48',
   },

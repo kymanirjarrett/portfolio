@@ -18,12 +18,12 @@ export default function Work() {
   const bearcat = projects.find((p) => p.id === 'bearcat-buddies')!
 
   return (
-    <section id="work" className="py-24 px-6">
+    <section id="projects" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
           {...(reduced ? {} : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport, transition: { duration: 0.5 } })}
         >
-          <p className="font-mono text-xs text-muted uppercase tracking-widest mb-4">Selected Work</p>
+          <p className="font-mono text-xs text-muted uppercase tracking-widest mb-4">Projects</p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-ink mb-12">Built for real problems</h2>
         </motion.div>
 
