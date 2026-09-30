@@ -1,89 +1,60 @@
-import { motion } from 'framer-motion'
-import { Github, Linkedin, Mail } from 'lucide-react'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useResumeModal } from '@/contexts/ResumeModalContext'
+const EMAIL = 'jarretkr@mail.uc.edu'
 
-const links = [
-  {
-    label: 'Email',
-    href: 'mailto:jarretkr@mail.uc.edu',
-    display: 'jarretkr@mail.uc.edu',
-    icon: Mail,
-  },
-  {
-    label: 'GitHub',
-    href: 'https://github.com/kymanirjarrett',
-    display: 'github.com/kymanirjarrett',
-    icon: Github,
-  },
-  {
-    label: 'LinkedIn',
-    href: 'https://linkedin.com/in/kymanirjarrett',
-    display: 'linkedin.com/in/kymanirjarrett',
-    icon: Linkedin,
-  },
-]
+const linkClass =
+  'font-display font-semibold text-paper underline decoration-paper/30 underline-offset-4 transition-colors hover:decoration-paper'
 
 export default function Contact() {
-  const reduced = useReducedMotion()
-  const { openModal } = useResumeModal()
-
   return (
-    <section id="contact" className="py-24 px-6 bg-ink text-paper relative overflow-hidden">
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(59,73,223,0.2) 0%, transparent 70%)',
-        }}
-        aria-hidden
-      />
+    <section
+      id="contact"
+      aria-labelledby="contact-heading"
+      className="page-grid bg-ink py-section text-paper"
+    >
+      <h2 id="contact-heading" className="heading-display col-span-12 text-h2">
+        Contact
+      </h2>
+      <p className="col-span-12 mt-6 text-lead text-muted-inverse">
+        The best way to reach me is email.
+      </p>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <motion.div
-          initial={reduced ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-xl"
-        >
-          <p className="font-mono text-xs text-paper/40 uppercase tracking-widest mb-4">Contact</p>
-          <h2 className="font-display font-bold text-3xl md:text-4xl mb-6 text-balance">
-            Let's build something worth talking about.
-          </h2>
-          <p className="text-paper/60 text-lg leading-relaxed mb-10">
-            Open to new grad roles, co-op opportunities, and interesting problems across
-            cloud, full-stack, DevOps, and security. Reach out — I respond fast.
-          </p>
+      <a
+        href={`mailto:${EMAIL}`}
+        className="col-span-12 mt-8 justify-self-start break-all font-display text-[clamp(1.75rem,1rem+3.4vw,5.5rem)] font-bold leading-tight tracking-[-0.02em] underline decoration-cobalt decoration-[0.06em] underline-offset-[0.14em] transition-colors hover:decoration-paper [font-stretch:112%]"
+      >
+        {EMAIL}
+      </a>
 
-          <ul className="space-y-4 mb-10" role="list">
-            {links.map(({ label, href, display, icon: Icon }) => (
-              <li key={label}>
-                <a
-                  href={href}
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="flex items-center gap-4 group"
-                  aria-label={`${label}: ${display}`}
-                >
-                  <span className="w-10 h-10 rounded-xl bg-paper/10 flex items-center justify-center group-hover:bg-accent transition-colors">
-                    <Icon size={18} className="text-paper/60 group-hover:text-white transition-colors" />
-                  </span>
-                  <span className="text-paper/70 group-hover:text-paper transition-colors text-sm md:text-base">
-                    {display}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <button
-            onClick={openModal}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-medium rounded-full hover:bg-accent/90 transition-colors"
+      <ul className="col-span-12 mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
+        <li>
+          <a
+            href="https://github.com/kymanirjarrett"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
           >
-            View Resume
-          </button>
-        </motion.div>
-      </div>
+            GitHub
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://linkedin.com/in/kymanirjarrett"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            LinkedIn
+          </a>
+        </li>
+        <li>
+          <a
+            href="/resume.pdf"
+            download="Kymani_Jarrett_Resume.pdf"
+            className="inline-flex rounded-full border border-paper/30 px-5 py-2.5 font-display font-semibold text-paper transition-colors hover:border-paper/60 hover:bg-paper/10"
+          >
+            Download resume
+          </a>
+        </li>
+      </ul>
     </section>
   )
 }

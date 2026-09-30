@@ -1,41 +1,71 @@
-import { motion } from 'framer-motion'
-import { skillCategories } from '@/data/skills'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, type MotionValue } from 'motion/react'
+import { skillCategories, type SkillCategory } from '@/data/skills'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
-const viewport = { once: false, amount: 0.1 }
+// Each group starts scattered at its own offset and settles into the grid as
+// the reader scrolls, so the four read as assembling rather than fading in.
+const SCATTER = [
+  { y: 160, rotate: -4 },
+  { y: 70, rotate: 3 },
+  { y: 220, rotate: -2 },
+  { y: 110, rotate: 4 },
+]
 
-export default function Skills() {
-  const reduced = useReducedMotion()
+function SkillGroup({
+  category,
+  index,
+  progress,
+  animated,
+}: {
+  category: SkillCategory
+  index: number
+  progress: MotionValue<number>
+  animated: boolean
+}) {
+  const scatter = SCATTER[index % SCATTER.length]
+  const y = useTransform(progress, [0, 1], [scatter.y, 0])
+  const rotate = useTransform(progress, [0, 1], [scatter.rotate, 0])
 
   return (
-    <section id="skills" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          {...(reduced ? {} : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport, transition: { duration: 0.5 } })}
-        >
-          <p className="font-mono text-xs text-muted uppercase tracking-widest mb-4">Skills</p>
-          <h2 className="font-display font-bold text-3xl md:text-4xl text-ink mb-12">The toolkit</h2>
-        </motion.div>
+    <motion.div
+      style={animated ? { y, rotate } : undefined}
+      className="col-span-12 border-t border-ink/15 pt-6 sm:col-span-6 lg:col-span-3"
+    >
+      <h3 className="font-display text-lead font-semibold">{category.label}</h3>
+      <ul className="mt-4 space-y-1.5">
+        {category.skills.map((skill) => (
+          <li key={skill}>{skill}</li>
+        ))}
+      </ul>
+    </motion.div>
+  )
+}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skillCategories.map((cat, i) => (
-            <motion.div
-              key={cat.label}
-              {...(reduced ? {} : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport, transition: { duration: 0.45, delay: i * 0.08, ease: 'easeOut' } })}
-              className="rounded-2xl border border-ink/8 bg-white/70 backdrop-blur-sm p-6"
-            >
-              <h3 className="font-mono text-xs uppercase tracking-widest text-accent mb-4">{cat.label}</h3>
-              <ul className="space-y-2.5" role="list">
-                {cat.skills.map((skill) => (
-                  <li key={skill} className="text-sm text-muted flex items-center gap-2">
-                    <span className="w-1 h-1 rounded-full bg-accent/40 flex-shrink-0" aria-hidden />
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
+export default function Skills() {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: gridRef, offset: ['start end', 'start 0.45'] })
+
+  return (
+    <section
+      id="skills"
+      aria-labelledby="skills-heading"
+      className="page-grid overflow-x-clip py-section"
+    >
+      <h2 id="skills-heading" className="heading-display col-span-12 mb-10 text-h2 lg:mb-16">
+        Skills
+      </h2>
+      <div ref={gridRef} className="col-span-12 grid grid-cols-12 gap-x-[var(--grid-gap)] gap-y-10">
+        {skillCategories.map((category, i) => (
+          <SkillGroup
+            key={category.label}
+            category={category}
+            index={i}
+            progress={scrollYProgress}
+            animated={!reduced}
+          />
+        ))}
       </div>
     </section>
   )

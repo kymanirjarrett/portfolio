@@ -4,17 +4,6 @@ import ResumeModal from '@/components/ResumeModal'
 
 vi.mock('@/hooks/useReducedMotion', () => ({ useReducedMotion: () => true }))
 
-vi.mock('framer-motion', async () => {
-  const actual = await vi.importActual<typeof import('framer-motion')>('framer-motion')
-  return {
-    ...actual,
-    motion: {
-      div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => <div {...props}>{children}</div>,
-    },
-    AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  }
-})
-
 function renderModal(open: boolean, onClose = vi.fn()) {
   return { onClose, ...render(<ResumeModal open={open} onClose={onClose} />) }
 }
@@ -36,6 +25,7 @@ describe('ResumeModal', () => {
     const links = screen.getAllByRole('link', { name: /download/i })
     expect(links.length).toBeGreaterThan(0)
     expect(links[0]).toHaveAttribute('href', '/resume.pdf')
+    expect(links[0]).toHaveTextContent('Download resume')
   })
 
   it('calls onClose when the close button is clicked', () => {

@@ -1,57 +1,79 @@
+export interface ProjectLink {
+  label: string
+  href: string
+}
+
 export interface Project {
   id: string
   title: string
-  tagline: string
+  kind: string
   description: string
-  problem: string
+  /** Extra line shown when space allows. */
+  context?: string
   stack: string[]
-  links: { label: string; href: string }[]
+  caseStudy: string | null
   liveUrl: string | null
-  featured: boolean
+  repoUrl: string | null
+  inDevelopment: boolean
 }
 
 export const projects: Project[] = [
   {
     id: 'vigil',
     title: 'Vigil',
-    tagline: 'ETL Monitoring & Observability Platform',
+    kind: 'ETL observability platform',
     description:
-      'Production-grade platform for monitoring AWS ETL pipelines with statistical anomaly detection, automated alerting, and 7/30-day trend analysis.',
-    problem:
-      'ETL pipeline failures are silent and costly. Vigil surfaces duration spikes, consecutive failures, and drift before they become incidents.',
-    stack: ['React', 'Vite', 'Python', 'FastAPI', 'AWS', 'boto3', 'PostgreSQL', 'Supabase', 'JWT', 'SendGrid'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/kymanirjarrett/vigil' },
+      'Vigil is an ETL observability platform I built to monitor AWS Glue pipelines in real time. It catches duration spikes and repeated failures, sends alerts before they cascade downstream, and runs on a security foundation with role-based access, audit logging, and row-level security on every table.',
+    stack: [
+      'React',
+      'Vite',
+      'Python',
+      'FastAPI',
+      'PostgreSQL (Supabase)',
+      'Alembic',
+      'boto3',
+      'AWS Glue',
+      'JWT',
+      'SendGrid',
+      'Vercel',
+      'Render',
     ],
+    caseStudy: '/projects/vigil',
     liveUrl: 'https://vigil-three-amber.vercel.app',
-    featured: true,
+    repoUrl: 'https://github.com/kymanirjarrett/vigil',
+    inDevelopment: false,
   },
   {
     id: 'clausify',
     title: 'Clausify',
-    tagline: 'AI-Powered Legal SaaS',
+    kind: 'AI contract analysis',
     description:
-      'Contract risk analysis platform using a RAG pipeline for clause-level scoring, multi-version diff tracking, and AI-generated negotiation summaries.',
-    problem:
-      'Legal review is slow and expensive. Clausify lets non-lawyers understand contract risk and negotiate confidently with AI-backed clause analysis.',
-    stack: ['Next.js', 'TypeScript', 'FastAPI', 'LangChain', 'Groq', 'pgvector', 'Supabase', 'AWS S3'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/kymanirjarrett/clausify' },
+      'Clausify is an AI contract analysis platform for freelancers and small businesses. Upload a contract and it scores the risk of every clause against industry-standard language, using a RAG pipeline built with LangChain and the Groq API. It runs on Spring Boot and MySQL with an Angular front end, and only ever stores the extracted text, never the contract itself. Currently in active development.',
+    stack: [
+      'Spring Boot',
+      'Spring Data JPA',
+      'MySQL',
+      'Angular',
+      'Tailwind CSS',
+      'LangChain',
+      'Groq',
     ],
+    caseStudy: '/projects/clausify',
     liveUrl: null,
-    featured: true,
+    repoUrl: 'https://github.com/kymanirjarrett/clausify',
+    inDevelopment: true,
   },
   {
     id: 'bearcat-buddies',
-    title: 'Bearcat Buddies Automation',
-    tagline: 'Recruitment Pipeline Automation',
+    title: 'Bearcat Buddies recruitment automation',
+    kind: 'Power Automate system',
     description:
-      'Microsoft Power Automate pipeline replacing a manual paper process: per-member QR-code attribution, automated welcome emails, and a SharePoint Excel quota dashboard.',
-    problem:
-      'Manual paper-based recruitment tracking created attribution gaps and bottlenecks. This pipeline made onboarding instant and fully auditable.',
-    stack: ['Microsoft Power Automate', 'SharePoint', 'Excel', 'QR Code Attribution'],
-    links: [],
+      "I replaced Bearcat Buddies' pen-and-paper recruitment process with a Power Automate system that credits every sign-up to the ambassador who recruited them, sends automatic welcome emails, and tracks quotas and attendance on a live dashboard. I also wrote the reset guide so whoever comes after me can run it without any technical background.",
+    context: "Bearcat Buddies is UC's largest tutoring pathway into Cincinnati Public Schools.",
+    stack: ['Power Automate', 'SharePoint', 'Excel', 'QR codes'],
+    caseStudy: null,
     liveUrl: null,
-    featured: false,
+    repoUrl: null,
+    inDevelopment: false,
   },
 ]

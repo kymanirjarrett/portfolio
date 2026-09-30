@@ -1,9 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { X, Download } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
+import { useLenis } from 'lenis/react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+const RESUME_PATH = '/resume.pdf'
+const DOWNLOAD_NAME = 'Kymani_Jarrett_Resume.pdf'
 
 interface ResumeModalProps {
   open: boolean
@@ -12,6 +15,7 @@ interface ResumeModalProps {
 
 export default function ResumeModal({ open, onClose }: ResumeModalProps) {
   const reduced = useReducedMotion()
+  const lenis = useLenis()
   const dialogRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const isMobile = typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
@@ -21,6 +25,7 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
     const prev = document.activeElement as HTMLElement | null
     closeRef.current?.focus()
     document.body.style.overflow = 'hidden'
+    lenis?.stop()
 
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
@@ -33,16 +38,12 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault()
-          last?.focus()
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault()
-          first?.focus()
-        }
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last?.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first?.focus()
       }
     }
 
@@ -50,17 +51,17 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
     return () => {
       document.removeEventListener('keydown', onKeyDown)
       document.body.style.overflow = ''
+      lenis?.start()
       prev?.focus()
     }
-  }, [open, onClose])
+  }, [open, onClose, lenis])
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-50 bg-ink/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-ink/60"
             initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -69,61 +70,55 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
             aria-hidden
           />
 
-          {/* Modal */}
           <motion.div
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="Resume preview"
-            className="fixed inset-x-4 inset-y-4 md:inset-x-8 md:inset-y-8 lg:inset-x-16 lg:inset-y-8 z-50 bg-surface rounded-2xl shadow-2xl flex flex-col overflow-hidden"
-            initial={reduced ? false : { opacity: 0, scale: 0.96, y: 16 }}
+            data-lenis-prevent
+            className="fixed inset-3 z-50 flex flex-col overflow-hidden rounded-panel bg-paper shadow-[0_24px_60px_rgb(20_20_50/0.35)] md:inset-x-[max(1.5rem,12vw)] md:inset-y-6"
+            initial={reduced ? false : { opacity: 0, scale: 0.97, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 16 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Header bar */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-ink/8 flex-shrink-0">
-              <span className="font-display font-semibold text-sm text-ink">Kymani Jarrett — Resume</span>
+            <div className="flex flex-shrink-0 items-center justify-between gap-4 border-b border-ink/10 px-5 py-3">
+              <span className="font-display font-semibold text-ink">Resume</span>
               <div className="flex items-center gap-2">
                 <a
-                  href="/resume.pdf"
-                  download="Kymani_Jarrett_Resume.pdf"
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-accent text-white text-xs font-medium rounded-full hover:bg-accent/90 transition-colors"
+                  href={RESUME_PATH}
+                  download={DOWNLOAD_NAME}
+                  className="btn-quiet py-1.5 text-small"
                 >
-                  <Download size={13} />
-                  Download
+                  <Download size={15} aria-hidden />
+                  Download resume
                 </a>
                 <button
                   ref={closeRef}
+                  type="button"
                   onClick={onClose}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-ink/5 transition-colors"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-ink/5 hover:text-ink"
                   aria-label="Close resume preview"
                 >
-                  <X size={16} />
+                  <X size={18} />
                 </button>
               </div>
             </div>
 
-            {/* PDF content */}
-            <div className="flex-1 min-h-0 bg-ink/5">
+            <div className="min-h-0 flex-1 bg-ink/5">
               {isMobile ? (
-                <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
-                  <p className="text-muted text-sm">PDF preview isn't available on mobile.</p>
-                  <a
-                    href="/resume.pdf"
-                    download="Kymani_Jarrett_Resume.pdf"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-medium rounded-full hover:bg-accent/90 transition-colors"
-                  >
-                    <Download size={16} />
-                    Download Resume
+                <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
+                  <p className="text-muted">PDF preview isn't available on mobile.</p>
+                  <a href={RESUME_PATH} download={DOWNLOAD_NAME} className="btn-quiet">
+                    <Download size={16} aria-hidden />
+                    Download resume
                   </a>
                 </div>
               ) : (
                 <iframe
-                  src="/resume.pdf#view=FitH&toolbar=0"
+                  src={`${RESUME_PATH}#view=FitH&toolbar=0`}
                   title="Resume"
-                  className="w-full h-full border-0"
-                  aria-label="Resume PDF preview"
+                  className="h-full w-full border-0"
                 />
               )}
             </div>
