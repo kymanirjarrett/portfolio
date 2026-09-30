@@ -1,25 +1,23 @@
 const EMAIL = 'jarretkr@mail.uc.edu'
 
 const linkClass =
-  'font-display font-semibold text-paper underline decoration-paper/30 underline-offset-4 transition-colors hover:decoration-paper'
+  'font-display font-semibold text-fg underline decoration-fg/30 underline-offset-4 transition-colors hover:decoration-fg'
 
 export default function Contact() {
   return (
     <section
       id="contact"
       aria-labelledby="contact-heading"
-      className="page-grid bg-ink py-section text-paper"
+      className="page-grid bg-surface py-section text-fg"
     >
       <h2 id="contact-heading" className="heading-display col-span-12 text-h2">
         Contact
       </h2>
-      <p className="col-span-12 mt-6 text-lead text-muted-inverse">
-        The best way to reach me is email.
-      </p>
+      <p className="col-span-12 mt-6 text-lead text-muted">The best way to reach me is email.</p>
 
       <a
         href={`mailto:${EMAIL}`}
-        className="col-span-12 mt-8 justify-self-start break-all font-display text-[clamp(1.75rem,1rem+3.4vw,5.5rem)] font-bold leading-tight tracking-[-0.02em] underline decoration-cobalt decoration-[0.06em] underline-offset-[0.14em] transition-colors hover:decoration-paper [font-stretch:112%]"
+        className="col-span-12 mt-8 justify-self-start break-all font-display text-[clamp(1.75rem,1rem+3.4vw,5.5rem)] font-bold leading-tight tracking-[-0.02em] underline decoration-cobalt decoration-[0.06em] underline-offset-[0.14em] transition-colors hover:decoration-fg [font-stretch:112%]"
       >
         {EMAIL}
       </a>
@@ -49,7 +47,7 @@ export default function Contact() {
           <a
             href="/resume.pdf"
             download="Kymani_Jarrett_Resume.pdf"
-            className="inline-flex rounded-full border border-paper/30 px-5 py-2.5 font-display font-semibold text-paper transition-colors hover:border-paper/60 hover:bg-paper/10"
+            className="inline-flex rounded-full border border-fg/30 px-5 py-2.5 font-display font-semibold text-fg transition-colors hover:border-fg/60 hover:bg-canvas/10"
           >
             Download resume
           </a>

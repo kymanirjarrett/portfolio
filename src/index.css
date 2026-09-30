@@ -4,21 +4,22 @@
 
 @layer base {
   :root {
-    --paper: #f7f7fc;
-    --ink: #141432;
+    --canvas: #0d0d24;
+    --fg: #f7f7fc;
     --cobalt: #2f54eb;
+    --cobalt-light: #7f96ff;
     --gutter: clamp(1.25rem, 4vw, 4rem);
     --grid-gap: clamp(1rem, 2vw, 2.5rem);
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   html {
-    background-color: var(--paper);
-    scrollbar-color: rgb(20 20 50 / 0.35) transparent;
+    background-color: var(--canvas);
+    scrollbar-color: rgb(247 247 252 / 0.25) transparent;
   }
 
   body {
-    @apply bg-paper text-ink font-sans text-body;
+    @apply bg-canvas text-fg font-sans text-body;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     caret-color: var(--cobalt);
@@ -26,7 +27,7 @@
 
   ::selection {
     background-color: var(--cobalt);
-    color: var(--paper);
+    color: var(--fg);
   }
 
   h1,
@@ -46,7 +47,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--cobalt);
+    outline: 2px solid var(--cobalt-light);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -72,7 +73,7 @@
   }
 
   /* Fades the hero gradient out at the top (under the nav) and toward the text
-     column, so body copy and nav links always sit on paper. */
+     column, so body copy and nav links always sit on the page background. */
   .hero-atmosphere {
     mask-image: linear-gradient(to bottom, transparent 0, black 20%, black 70%, transparent);
   }
@@ -80,7 +81,7 @@
     .hero-atmosphere {
       mask-image:
         linear-gradient(to right, transparent 45%, black 80%),
-        linear-gradient(to bottom, transparent 4rem, black 30%);
+        linear-gradient(to bottom, transparent 4rem, black 30%, black 70%, transparent);
       mask-composite: intersect;
     }
   }
@@ -103,7 +104,7 @@
 
   .stack-tag {
     @apply rounded-tag px-2 py-0.5 text-small text-muted;
-    background-color: rgb(20 20 50 / 0.06);
+    background-color: rgb(247 247 252 / 0.08);
   }
 
   .btn-primary {
@@ -111,10 +112,10 @@
   }
 
   .btn-quiet {
-    @apply inline-flex items-center gap-2 rounded-full border border-ink/20 px-5 py-2.5 font-display font-medium text-ink transition-[transform,background-color,border-color] duration-200 ease-out-expo hover:border-ink/40 hover:bg-ink/5 active:scale-[0.97];
+    @apply inline-flex items-center gap-2 rounded-full border border-fg/25 px-5 py-2.5 font-display font-medium text-fg transition-[transform,background-color,border-color] duration-200 ease-out-expo hover:border-fg/50 hover:bg-fg/5 active:scale-[0.97];
   }
 
   .link-inline {
-    @apply font-medium text-cobalt underline decoration-cobalt/30 transition-colors hover:decoration-cobalt;
+    @apply font-medium text-cobalt-light underline decoration-cobalt-light/40 transition-colors hover:decoration-cobalt-light;
   }
 }

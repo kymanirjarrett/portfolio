@@ -79,7 +79,9 @@ export default function ClausifyCaseStudy() {
           <ol className="max-w-measure space-y-5">
             {steps.map((step, i) => (
               <li key={step} className="grid grid-cols-[2.5rem_1fr] items-baseline">
-                <span className="font-display font-bold tabular-nums text-cobalt">{i + 1}</span>
+                <span className="font-display font-bold tabular-nums text-cobalt-light">
+                  {i + 1}
+                </span>
                 <span>{step}</span>
               </li>
             ))}
@@ -118,7 +120,7 @@ export default function ClausifyCaseStudy() {
           </p>
           <dl className="mt-6 grid gap-6 sm:grid-cols-2">
             {targets.map(({ value, label }) => (
-              <div key={label} className="border-t border-ink/15 pt-4">
+              <div key={label} className="border-t border-fg/15 pt-4">
                 <dt className="font-display text-small font-medium text-muted">Target</dt>
                 <dd className="mt-1">
                   <span className="block font-display text-h3 font-bold">{value}</span>

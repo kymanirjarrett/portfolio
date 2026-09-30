@@ -32,7 +32,7 @@ export function CaseSection({ title, children }: CaseSectionProps) {
   return (
     <section
       aria-labelledby={id}
-      className="page-grid gap-y-6 border-t border-ink/10 py-14 lg:py-20"
+      className="page-grid gap-y-6 border-t border-fg/10 py-14 lg:py-20"
     >
       <h2
         id={id}

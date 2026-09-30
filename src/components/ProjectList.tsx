@@ -7,7 +7,7 @@ import StackTags from './StackTags'
 import StatusMarker from './StatusMarker'
 
 const actionClass =
-  'font-display font-semibold text-cobalt underline decoration-cobalt/30 underline-offset-4 transition-colors hover:decoration-cobalt'
+  'font-display font-semibold text-cobalt-light underline decoration-cobalt-light/40 underline-offset-4 transition-colors hover:decoration-cobalt-light'
 
 function ProjectActions({ project }: { project: Project }) {
   const links = [
@@ -60,7 +60,7 @@ function ProjectRow({ project, from, headingLevel: Heading }: ProjectRowProps) {
       ref={ref}
       aria-labelledby={`project-${project.id}`}
       style={animated ? { x } : undefined}
-      className="grid grid-cols-12 gap-x-[var(--grid-gap)] gap-y-6 border-t border-ink/15 py-10 lg:py-14"
+      className="grid grid-cols-12 gap-x-[var(--grid-gap)] gap-y-6 border-t border-fg/15 py-10 lg:py-14"
     >
       <div className="col-span-12 lg:col-span-5">
         <Heading

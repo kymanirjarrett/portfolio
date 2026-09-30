@@ -27,7 +27,7 @@ export default function ExperienceTimeline({
     <ol ref={listRef} className="relative col-span-12">
       <span
         aria-hidden
-        className={`absolute bottom-0 top-2 w-px -translate-x-1/2 bg-ink/10 ${LINE_POSITION}`}
+        className={`absolute bottom-0 top-2 w-px -translate-x-1/2 bg-fg/10 ${LINE_POSITION}`}
       />
       <motion.span
         aria-hidden
@@ -45,7 +45,7 @@ export default function ExperienceTimeline({
           <div className="col-start-1 row-start-1 flex justify-center pt-1.5 lg:col-start-2">
             <span
               aria-hidden
-              className="relative z-10 h-3 w-3 rounded-full border-2 border-cobalt bg-paper"
+              className="relative z-10 h-3 w-3 rounded-full border-2 border-cobalt bg-canvas"
             />
           </div>
 
@@ -54,7 +54,7 @@ export default function ExperienceTimeline({
             <ul className="mt-5 max-w-measure space-y-3">
               {item.bullets.map((bullet) => (
                 <li key={bullet} className="relative pl-5">
-                  <span aria-hidden className="absolute left-0 top-[0.7em] h-px w-2.5 bg-ink/40" />
+                  <span aria-hidden className="absolute left-0 top-[0.7em] h-px w-2.5 bg-fg/40" />
                   {bullet}
                 </li>
               ))}

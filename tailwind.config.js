@@ -3,17 +3,20 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
-      // "Blue hour" palette. Cobalt does most of the work; ember is reserved
-      // for the primary action and the "in active development" marker, and is
-      // only ever a fill with ink text on it (it fails contrast as text).
+      // "Blue hour" palette, dark only. Cobalt does most of the work: as a fill
+      // and for lines on dark (3.26:1, fine for UI), with cobalt-light for text
+      // (7.01:1). Ember is reserved for the primary action and the "in active
+      // development" marker, always as a fill with ink text.
       colors: {
-        paper: '#F7F7FC',
-        ink: '#141432',
+        canvas: '#0D0D24', // page background
+        surface: '#141432', // raised: nav, modal, contact band
+        fg: '#F7F7FC', // 17.87:1 on canvas
+        muted: '#A9AACB', // 8.45:1 on canvas
         cobalt: '#2F54EB',
+        'cobalt-light': '#7F96FF',
         violet: '#7B4DFF',
         ember: '#FF7F11',
-        muted: '#55567A', // 6.56:1 on paper
-        'muted-inverse': '#A9AACB', // 7.91:1 on ink
+        ink: '#141432', // text on ember fills only
       },
       fontFamily: {
         display: ['"Mona Sans Variable"', 'system-ui', 'sans-serif'],

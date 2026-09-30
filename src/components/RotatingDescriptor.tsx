@@ -22,7 +22,7 @@ export default function RotatingDescriptor() {
   }, [reduced])
 
   return (
-    <p className="font-display text-lead font-semibold text-cobalt">
+    <p className="font-display text-lead font-semibold text-cobalt-light">
       {/* Screen readers get the full list once instead of an announcement every 4.5 seconds. */}
       <span className="sr-only">Areas of focus: {descriptors.join(', ')}</span>
       <span aria-hidden className="relative inline-block h-[1.5em] overflow-hidden align-bottom">

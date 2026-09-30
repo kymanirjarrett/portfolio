@@ -14,7 +14,7 @@ export default function LeadershipList({
       {items.map((item) => (
         <li
           key={`${item.role}-${item.org}`}
-          className="col-span-12 border-t border-ink/15 py-8 md:col-span-6 lg:py-10"
+          className="col-span-12 border-t border-fg/15 py-8 md:col-span-6 lg:py-10"
         >
           <Heading className="heading-card">{item.role}</Heading>
           <p className="mt-1 font-display font-medium text-muted">{item.org}</p>

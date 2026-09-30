@@ -12,7 +12,7 @@ const SPHERE_RADIUS = 2.2
 // Each logo sits on a paper disc so it stays legible over every frame of the
 // gradient behind the hero, from the brightest to the darkest.
 const discClass =
-  'flex h-11 w-11 items-center justify-center rounded-full bg-paper/90 text-cobalt shadow-[0_2px_10px_rgb(20_20_50/0.14)]'
+  'flex h-11 w-11 items-center justify-center rounded-full bg-surface/85 text-cobalt-light ring-1 ring-fg/10 shadow-[0_2px_10px_rgb(0_0_0/0.35)]'
 
 function SphereGroup() {
   const groupRef = useRef<THREE.Group>(null)

@@ -30,7 +30,7 @@ function SkillGroup({
   return (
     <motion.div
       style={animated ? { y, rotate } : undefined}
-      className="col-span-12 border-t border-ink/15 pt-6 sm:col-span-6 lg:col-span-3"
+      className="col-span-12 border-t border-fg/15 pt-6 sm:col-span-6 lg:col-span-3"
     >
       <h3 className="font-display text-lead font-semibold">{category.label}</h3>
       <ul className="mt-4 space-y-1.5">

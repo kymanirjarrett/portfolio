@@ -89,7 +89,7 @@ export default function Hero() {
               href="https://github.com/kymanirjarrett"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink"
+              className="font-medium text-fg underline decoration-fg/25 underline-offset-4 transition-colors hover:decoration-fg"
             >
               GitHub
             </a>
@@ -97,7 +97,7 @@ export default function Hero() {
               href="https://linkedin.com/in/kymanirjarrett"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-ink"
+              className="font-medium text-fg underline decoration-fg/25 underline-offset-4 transition-colors hover:decoration-fg"
             >
               LinkedIn
             </a>
