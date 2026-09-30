@@ -61,7 +61,7 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
       {open && (
         <>
           <motion.div
-            className="fixed inset-0 z-50 bg-ink/60"
+            className="fixed inset-0 z-50 bg-canvas/50 backdrop-blur-md"
             initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -70,59 +70,63 @@ export default function ResumeModal({ open, onClose }: ResumeModalProps) {
             aria-hidden
           />
 
-          <motion.div
-            ref={dialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Resume preview"
-            data-lenis-prevent
-            className="fixed inset-3 z-50 flex flex-col overflow-hidden rounded-panel bg-paper shadow-[0_24px_60px_rgb(20_20_50/0.35)] md:inset-x-[max(1.5rem,12vw)] md:inset-y-6"
-            initial={reduced ? false : { opacity: 0, scale: 0.97, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 12 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="flex flex-shrink-0 items-center justify-between gap-4 border-b border-ink/10 px-5 py-3">
-              <span className="font-display font-semibold text-ink">Resume</span>
-              <div className="flex items-center gap-2">
-                <a
-                  href={RESUME_PATH}
-                  download={DOWNLOAD_NAME}
-                  className="btn-quiet py-1.5 text-small"
-                >
-                  <Download size={15} aria-hidden />
-                  Download resume
-                </a>
-                <button
-                  ref={closeRef}
-                  type="button"
-                  onClick={onClose}
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-ink/5 hover:text-ink"
-                  aria-label="Close resume preview"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-
-            <div className="min-h-0 flex-1 bg-ink/5">
-              {isMobile ? (
-                <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
-                  <p className="text-muted">PDF preview isn't available on mobile.</p>
-                  <a href={RESUME_PATH} download={DOWNLOAD_NAME} className="btn-quiet">
-                    <Download size={16} aria-hidden />
+          {/* Flex wrapper centers the panel, so Motion's transform on the panel
+              never fights a centering translate. */}
+          <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6">
+            <motion.div
+              ref={dialogRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Resume preview"
+              data-lenis-prevent
+              className="pointer-events-auto flex h-full max-h-full w-full flex-col overflow-hidden rounded-panel bg-surface shadow-[0_24px_60px_rgb(0_0_0/0.5)] ring-1 ring-fg/10 md:h-[calc(100dvh-3rem)] md:w-[min(100%,calc((100dvh-3rem-3.6rem)*0.7727))]"
+              initial={reduced ? false : { opacity: 0, scale: 0.97, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 12 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="flex flex-shrink-0 items-center justify-between gap-4 border-b border-fg/10 px-5 py-3">
+                <span className="font-display font-semibold text-fg">Resume</span>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={RESUME_PATH}
+                    download={DOWNLOAD_NAME}
+                    className="btn-quiet py-1.5 text-small"
+                  >
+                    <Download size={15} aria-hidden />
                     Download resume
                   </a>
+                  <button
+                    ref={closeRef}
+                    type="button"
+                    onClick={onClose}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-fg/5 hover:text-fg"
+                    aria-label="Close resume preview"
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
-              ) : (
-                <iframe
-                  src={`${RESUME_PATH}#view=FitH&toolbar=0`}
-                  title="Resume"
-                  className="h-full w-full border-0"
-                />
-              )}
-            </div>
-          </motion.div>
+              </div>
+
+              <div className="min-h-0 flex-1 bg-fg/5">
+                {isMobile ? (
+                  <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
+                    <p className="text-muted">PDF preview isn't available on mobile.</p>
+                    <a href={RESUME_PATH} download={DOWNLOAD_NAME} className="btn-quiet">
+                      <Download size={16} aria-hidden />
+                      Download resume
+                    </a>
+                  </div>
+                ) : (
+                  <iframe
+                    src={`${RESUME_PATH}#toolbar=0&navpanes=0&view=Fit&zoom=page-fit`}
+                    title="Resume"
+                    className="h-full w-full border-0"
+                  />
+                )}
+              </div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
