@@ -22,11 +22,30 @@ export default function About() {
         </p>
       </div>
 
-      <div className="col-span-12 self-end border-t border-ink/15 pt-6 lg:col-span-4 lg:col-start-9">
-        <p className="font-display font-semibold">University of Cincinnati</p>
-        <p className="mt-1 text-muted">
-          B.Sc. in Information Technology and B.Sc. in Cybersecurity. GPA 3.7, 3× Dean's List.
-        </p>
+      <div className="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-3 lg:col-start-10 lg:self-start">
+        {/* WebP at two sizes for normal and high-density screens; the PNG is the fallback. */}
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/headshot-480.webp 480w, /headshot-960.webp 960w"
+            sizes="(min-width: 1024px) 24vw, (min-width: 640px) 60vw, 100vw"
+          />
+          <img
+            src="/professionalheadshot.png"
+            alt="Portrait of Kymani Jarrett"
+            width={1086}
+            height={1448}
+            loading="lazy"
+            decoding="async"
+            className="aspect-[3/4] w-full rounded-panel object-cover"
+          />
+        </picture>
+        <div className="mt-6 border-t border-fg/15 pt-6">
+          <p className="font-display font-semibold">University of Cincinnati</p>
+          <p className="mt-1 text-muted">
+            B.Sc. in Information Technology and B.Sc. in Cybersecurity. GPA 3.7, 3× Dean's List.
+          </p>
+        </div>
       </div>
     </section>
   )
