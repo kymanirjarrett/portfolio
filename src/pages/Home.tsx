@@ -18,8 +18,11 @@ export default function Home() {
   useEffect(() => {
     const target = (location.state as { scrollTo?: string } | null)?.scrollTo
     if (!target) return
-    // Wait one frame for the DOM to settle after navigation before scrolling.
-    const id = requestAnimationFrame(() => scrollToId(target))
+    // Wait two frames so sections that measure themselves on mount (the
+    // highlights strip sets its own height) have settled before scrolling.
+    let id = requestAnimationFrame(() => {
+      id = requestAnimationFrame(() => scrollToId(target))
+    })
     // Clear the state so back-navigation doesn't re-trigger the scroll.
     window.history.replaceState({}, '')
     return () => cancelAnimationFrame(id)

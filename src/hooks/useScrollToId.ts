@@ -14,6 +14,10 @@ export function useScrollToId() {
       const el = document.getElementById(id)
       if (!el) return
       if (lenis) {
+        // Lenis caches the page's scroll limit and refreshes it a moment after
+        // layout changes. Right after a route change that cache still holds the
+        // previous page's height and would clamp the target short, so re-measure.
+        lenis.resize()
         lenis.scrollTo(el, { offset: NAV_OFFSET, immediate: reduced })
       } else {
         el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
