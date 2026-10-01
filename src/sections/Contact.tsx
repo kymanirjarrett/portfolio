@@ -13,7 +13,9 @@ export default function Contact() {
       <h2 id="contact-heading" className="heading-display col-span-12 text-h2">
         Contact
       </h2>
-      <p className="col-span-12 mt-6 text-lead text-muted">The best way to reach me is email.</p>
+      <p className="col-span-12 mt-6 text-lead text-muted">
+        I check my email regularly, feel free to reach out to me or connect with me on LinkedIn!
+      </p>
 
       <a
         href={`mailto:${EMAIL}`}

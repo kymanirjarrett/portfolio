@@ -64,8 +64,8 @@ export default function Hero() {
           </motion.div>
 
           <motion.p className="mt-4 max-w-[46ch] text-lead text-muted" {...enter(0.35)}>
-            Software engineer studying IT and Cybersecurity at the University of Cincinnati. Most
-            recently a Cloud Data Engineer Intern at The J.M. Smucker Co.
+            Software engineer studying IT and Cybersecurity at the University of Cincinnati.
+            Previously a Software Engineer Intern at The J.M. Smucker Company.
           </motion.p>
 
           <motion.div

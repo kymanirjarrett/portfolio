@@ -11,7 +11,9 @@ export const leadership: LeadershipItem[] = [
   {
     role: 'Resident Assistant',
     org: 'Resident Education & Development',
-    highlights: ['Responsible for a floor of 70 residents, planning 2+ programs a month.'],
+    highlights: [
+      'Responsible for a floor of 30 residents, planning and coordinating several community engagements per month.',
+    ],
   },
   {
     role: 'Secretary',
@@ -34,7 +36,16 @@ export const leadership: LeadershipItem[] = [
     org: 'United Black Student Association',
     highlights: [
       'Runs programming and event strategy, including The RoundTable, a recruiting dinner pairing members with hiring managers.',
-      '4+ signature events per semester with 40+ attendance.',
+      '4+ signature events per semester with 100+ attendees each, reaching up to 300 for major events like Akwaaba.',
+    ],
+  },
+  {
+    role: 'Lead Tutor',
+    org: 'Bearcat Buddies',
+    highlights: [
+      'Primary point of contact for a tutor group, serving as the liaison between tutors and the Center for Community Engagement.',
+      'Introduces a new tutoring strategy each week, checks in with tutors after every session, and follows up with anyone who is absent.',
+      'Manages session materials and sign-in sheets, and passes tutor feedback back to the Center for Community Engagement.',
     ],
   },
   {
@@ -51,14 +62,6 @@ export const leadership: LeadershipItem[] = [
     highlights: [
       'Served as a liaison between the Bearcat Buddies program and university partners, fostering positive relationships by representing at campus events & outreach activities.',
       "Assisted in recruiting, onboarding, and training new volunteers, helping to expand the program's reach and impact in local schools.",
-    ],
-  },
-  {
-    role: 'Tutor',
-    org: 'Bearcat Buddies',
-    highlights: [
-      'Provided one-on-one and small group academic tutoring to K-12 students in Cincinnati Public Schools, reinforcing foundational concepts in core subject areas and supporting student learning outcomes.',
-      'Maintained consistent communication with program coordinators and school partners to align tutoring sessions with student academic needs and semester timelines.',
     ],
   },
 ]

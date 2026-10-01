@@ -10,14 +10,14 @@ export interface ExperienceItem {
 export const experience: ExperienceItem[] = [
   {
     id: 'smucker',
-    role: 'Cloud Data Engineer Intern',
+    role: 'Software Engineer Intern',
     company: 'The J.M. Smucker Company',
     period: 'May – Aug 2026',
     bullets: [
       'Migrated a production CloudFormation repository from GitLab to GitHub Actions and wrote the template that provisions an OIDC identity provider and IAM roles, so deployments authenticate to AWS with no stored keys.',
       'Owned a new data field across every layer of a partner-driven ingestion pipeline (AppFlow, Glue, Athena), and rewrote a Glue ETL job after testing exposed CSV edge cases that were silently corrupting data.',
       "Moved an enterprise notification service's Lambdas off an end-of-life Python runtime (3.9 to 3.12), rebuilding prebuilt layers and centralizing the runtime version in a single GitHub Actions variable.",
-      "Gave a 15-minute talk to Smucker's engineering center of excellence arguing that architecture is a handoff mechanism, not an aesthetic.",
+      "Gave an hour-long presentation to the senior developers in Smucker's Software Engineering Center of Excellence, sharing my experience working with object-oriented programming and Clean Architecture.",
     ],
     stack: [
       'CloudFormation',

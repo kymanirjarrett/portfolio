@@ -31,7 +31,7 @@ export const spotlightTiles: SpotlightTile[] = [
   {
     id: 'smucker',
     title: 'The J.M. Smucker Co.',
-    subtitle: 'Cloud Data Engineer Intern',
+    subtitle: 'Software Engineer Intern',
     description:
       'Keyless OIDC deployments, a Glue job rewrite that stopped silent data corruption, and a Lambda runtime modernization.',
     href: '/experience',
@@ -51,7 +51,7 @@ export const spotlightTiles: SpotlightTile[] = [
     id: 'leadership',
     title: 'Leadership',
     subtitle: 'Campus organizations and residence life',
-    description: 'ColorStack, UBSA, Bearcat Buddies, and a floor of 70 residents.',
+    description: 'ColorStack, UBSA, Bearcat Buddies, and a floor of 30 residents.',
     href: '/leadership',
     action: 'See my leadership',
     isRoute: true,

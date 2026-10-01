@@ -7,14 +7,15 @@ export default function About() {
 
       <div className="col-span-12 max-w-measure space-y-5 text-lead lg:col-span-7">
         <p>
-          I'm Kymani, a double major in Information Technology and Cybersecurity at the University
-          of Cincinnati, graduating May 2028.
+          I'm a double major in Information Technology (Software Application Development) and
+          Cybersecurity at the University of Cincinnati, graduating May 2028.
         </p>
         <p>
-          I've spent the last two years building across the stack, from React front ends and Node
-          APIs at the UC IT Solutions Center to AWS data pipelines and CI/CD at The J.M. Smucker Co.
-          Outside of work, I build projects like Vigil and Clausify to go deeper on the problems I
-          run into.
+          Over the last two years, I've spent my time building responsive user interfaces in React
+          and backend Node APIs at the UC IT Solutions Center, and engineering and optimizing AWS
+          data pipelines and CI/CD at The J.M. Smucker Co. Outside of work, I build projects to
+          support things I'm passionate about, and automate processes to make life easier for those
+          around me!
         </p>
         <p>
           Currently looking for a Summer 2027 internship or co-op in cloud, platform, or security
@@ -43,7 +44,7 @@ export default function About() {
         <div className="mt-6 border-t border-fg/15 pt-6">
           <p className="font-display font-semibold">University of Cincinnati</p>
           <p className="mt-1 text-muted">
-            B.Sc. in Information Technology and B.Sc. in Cybersecurity. GPA 3.7, 3× Dean's List.
+            B.Sc. in Information Technology and B.Sc. in Cybersecurity. 3.7 GPA, 3× Dean's List.
           </p>
         </div>
       </div>
