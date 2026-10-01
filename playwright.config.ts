@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Visual snapshots of key routes at three desktop widths. CI uploads them as an
-// artifact so reviewers can compare layouts across pull requests.
+// Two suites: visual snapshots of key routes at three desktop widths (uploaded
+// by CI so reviewers can compare layouts across pull requests), and navigation
+// checks that run with motion on.
 export default defineConfig({
   testDir: './e2e',
   outputDir: './test-results',
@@ -14,7 +15,21 @@ export default defineConfig({
     // no scroll-scrubbed offsets, no autoplay.
     reducedMotion: 'reduce',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  // The navigation suite runs the live WebGL scenes, and a browser that has done
+  // so can fail large full-page captures afterwards. `npm run test:e2e` runs each
+  // project in its own process so the snapshot suite never shares a browser.
+  projects: [
+    {
+      name: 'snapshots',
+      testMatch: 'screenshots.spec.ts',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'navigation',
+      testMatch: 'navigation.spec.ts',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
   webServer: {
     command: 'npm run preview -- --port 4173 --strictPort',
     url: 'http://localhost:4173',

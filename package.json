@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" playwright.config.ts",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=snapshots && playwright test --project=navigation",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" playwright.config.ts"
   },
   "dependencies": {
