@@ -3,34 +3,48 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      // "Blue hour" palette, dark only. Cobalt does most of the work: as a fill
+      // and for lines on dark (3.26:1, fine for UI), with cobalt-light for text
+      // (7.01:1). Ember is reserved for the primary action and the "in active
+      // development" marker, always as a fill with ink text.
       colors: {
-        paper: '#FAFAF7',
-        ink: '#0A0A0A',
-        muted: '#5A5A55',
-        accent: '#3B49DF',
-        'accent-warm': '#FF7A45',
-        surface: '#FFFFFF',
+        canvas: '#0D0D24', // page background
+        surface: '#141432', // raised: nav, modal, contact band
+        fg: '#F7F7FC', // 17.87:1 on canvas
+        muted: '#A9AACB', // 8.45:1 on canvas
+        cobalt: '#2F54EB',
+        'cobalt-light': '#7F96FF',
+        violet: '#7B4DFF',
+        ember: '#FF7F11',
+        ink: '#141432', // text on ember fills only
       },
       fontFamily: {
-        display: ['"Clash Display"', 'system-ui', 'sans-serif'],
-        sans: ['"Geist Sans"', 'system-ui', 'sans-serif'],
-        mono: ['"Geist Mono"', 'monospace'],
+        display: ['"Mona Sans Variable"', 'system-ui', 'sans-serif'],
+        sans: ['"Atkinson Hyperlegible Next Variable"', 'system-ui', 'sans-serif'],
       },
-      backgroundImage: {
-        'hero-gradient':
-          'radial-gradient(ellipse 80% 60% at 50% -10%, #dde3ff 0%, #f5f5f0 55%, #FAFAF7 100%)',
-        'accent-glow':
-          'radial-gradient(ellipse 60% 40% at 50% 50%, rgba(59,73,223,0.15) 0%, transparent 70%)',
+      // Fluid role scale: large monitors get larger type instead of empty margins.
+      fontSize: {
+        hero: ['clamp(3.5rem, 2rem + 7.5vw, 11rem)', { lineHeight: '0.92', letterSpacing: '-0.03em' }],
+        h2: ['clamp(2.25rem, 1.4rem + 3.2vw, 5.5rem)', { lineHeight: '1', letterSpacing: '-0.02em' }],
+        h3: ['clamp(1.375rem, 1.1rem + 0.9vw, 2.25rem)', { lineHeight: '1.15', letterSpacing: '-0.01em' }],
+        lead: ['clamp(1.125rem, 1rem + 0.5vw, 1.5rem)', { lineHeight: '1.5' }],
+        body: ['clamp(1rem, 0.95rem + 0.2vw, 1.125rem)', { lineHeight: '1.6' }],
+        small: ['0.875rem', { lineHeight: '1.45' }],
       },
-      animation: {
-        'spin-slow': 'spin 20s linear infinite',
-        'fade-up': 'fadeUp 0.6s ease forwards',
+      // Radius follows hierarchy: sharp on dense items, soft on the few large panels.
+      borderRadius: {
+        tag: '4px',
+        panel: '1.5rem',
       },
-      keyframes: {
-        fadeUp: {
-          '0%': { opacity: '0', transform: 'translateY(24px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
+      maxWidth: {
+        measure: '68ch',
+      },
+      spacing: {
+        gutter: 'var(--gutter)',
+        section: 'clamp(4rem, 3rem + 4vw, 8rem)',
+      },
+      transitionTimingFunction: {
+        'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
     },
   },

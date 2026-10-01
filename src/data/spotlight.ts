@@ -4,63 +4,65 @@ export interface SpotlightTile {
   subtitle: string
   description: string
   href: string
+  /** Button text that says exactly where the tile goes. */
+  action: string
   isRoute: boolean
-  accentColor: string
 }
 
 export const spotlightTiles: SpotlightTile[] = [
   {
     id: 'vigil',
     title: 'Vigil',
-    subtitle: 'ETL Observability Platform',
-    description: 'Production-grade pipeline monitoring with statistical anomaly detection and automated alerting.',
+    subtitle: 'ETL observability platform',
+    description: 'ETL observability for AWS Glue, with anomaly alerts and a full security layer.',
     href: '/projects/vigil',
+    action: 'Read the case study',
     isRoute: true,
-    accentColor: '#3B49DF',
   },
   {
     id: 'clausify',
     title: 'Clausify',
-    subtitle: 'AI Legal SaaS',
-    description: 'RAG-powered contract risk scoring with clause-level AI analysis and negotiation summaries.',
+    subtitle: 'AI contract analysis',
+    description: 'Clause-level contract risk scoring with a RAG pipeline. In active development.',
     href: '/projects/clausify',
+    action: 'Read the case study',
     isRoute: true,
-    accentColor: '#7C3AED',
   },
   {
     id: 'smucker',
-    title: 'J.M. Smucker Co.',
-    subtitle: 'Cloud & Data Engineering',
-    description: 'Enterprise AWS ETL modernization — CloudFormation migration, CI/CD pipelines, and partner data integration.',
+    title: 'The J.M. Smucker Co.',
+    subtitle: 'Software Engineer Intern',
+    description:
+      'Keyless OIDC deployments, a Glue job rewrite that stopped silent data corruption, and a Lambda runtime modernization.',
     href: '/experience',
+    action: 'See my experience',
     isRoute: true,
-    accentColor: '#0891B2',
   },
   {
     id: 'itsc',
-    title: 'ITSC',
-    subtitle: 'Full-Stack Engineering',
-    description: 'Fortune 500 apps built with React + Node + Postgres — 30% faster data processing, 20% faster releases.',
+    title: 'UC IT Solutions Center',
+    subtitle: 'Software Engineer Intern',
+    description: 'A referral platform for a Fortune 500 client with 2,000+ users.',
     href: '/experience',
+    action: 'See my experience',
     isRoute: true,
-    accentColor: '#059669',
   },
   {
     id: 'leadership',
     title: 'Leadership',
-    subtitle: 'UBSA · ColorStack · RA',
-    description: '20+ employer relationships, 4+ events/semester, 40+ attendance — building community and opening doors.',
+    subtitle: 'Campus organizations and residence life',
+    description: 'ColorStack, UBSA, Bearcat Buddies, and a floor of 30 residents.',
     href: '/leadership',
+    action: 'See my leadership',
     isRoute: true,
-    accentColor: '#D97706',
   },
   {
     id: 'bearcat',
     title: 'Bearcat Buddies',
-    subtitle: 'Recruitment Automation',
-    description: 'Power Automate pipeline replacing paper processes — QR attribution, auto emails, SharePoint dashboards.',
+    subtitle: 'Recruitment automation',
+    description: 'A pen-and-paper recruitment process, replaced with Power Automate.',
     href: '#projects',
+    action: 'See the project',
     isRoute: false,
-    accentColor: '#E11D48',
   },
 ]

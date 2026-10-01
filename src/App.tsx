@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { ReactLenis, useLenis } from 'lenis/react'
 import Home from './pages/Home'
 import Nav from './components/Nav'
 import { ResumeModalProvider } from './contexts/ResumeModalContext'
@@ -11,38 +12,47 @@ const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
 
 function PageLoader() {
-  return (
-    <div className="min-h-screen bg-paper flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" aria-label="Loading" />
-    </div>
-  )
+  return <div className="min-h-screen bg-canvas" aria-busy="true" />
 }
 
 function ScrollToTop() {
   const { pathname } = useLocation()
+  const lenis = useLenis()
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true })
+    else window.scrollTo(0, 0)
+  }, [pathname, lenis])
   return null
 }
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <ResumeModalProvider>
-        <ScrollToTop />
-        <Nav />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/experience" element={<ExperiencePage />} />
-            <Route path="/leadership" element={<LeadershipPage />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/vigil" element={<VigilCaseStudy />} />
-            <Route path="/projects/clausify" element={<ClausifyCaseStudy />} />
-          </Routes>
-        </Suspense>
-      </ResumeModalProvider>
-    </BrowserRouter>
+    // Lenis smooths wheel scrolling but keeps native scroll, so position: sticky
+    // and Motion's useScroll keep working. It turns itself off under
+    // prefers-reduced-motion (respectReducedMotion defaults to true).
+    <ReactLenis root options={{ autoRaf: true }}>
+      <BrowserRouter>
+        <ResumeModalProvider>
+          <a
+            href="#main-content"
+            className="sr-only z-50 rounded-full bg-fg px-5 py-2.5 font-display font-semibold text-canvas focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+          >
+            Skip to content
+          </a>
+          <ScrollToTop />
+          <Nav />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/experience" element={<ExperiencePage />} />
+              <Route path="/leadership" element={<LeadershipPage />} />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/vigil" element={<VigilCaseStudy />} />
+              <Route path="/projects/clausify" element={<ClausifyCaseStudy />} />
+            </Routes>
+          </Suspense>
+        </ResumeModalProvider>
+      </BrowserRouter>
+    </ReactLenis>
   )
 }

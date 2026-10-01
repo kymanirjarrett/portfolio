@@ -8,6 +8,11 @@ dist/
 build/
 coverage/
 
+# Playwright
+test-results/
+playwright-report/
+screenshots/
+
 # Vite
 .vite/
 
@@ -31,5 +36,7 @@ Thumbs.db
 *.swp
 *.swo
 
-# Private documents
-reference
+# Private documents and handoff notes (never commit)
+reference/
+PORTFOLIO_*.md
+*HANDOFF*.md

@@ -1,12 +1,13 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import TechSphere from '@/components/TechSphere'
-import { sphereLogos } from '@/data/skills'
+import { sphereLogos } from '@/data/sphereLogos'
 
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => <div data-testid="canvas">{children}</div>,
+  Canvas: () => <div data-testid="canvas" />,
   useFrame: vi.fn(),
-  useThree: () => ({ gl: { setPixelRatio: vi.fn() } }),
+  useThree: (select: (state: { setFrameloop: () => void }) => unknown) =>
+    select({ setFrameloop: vi.fn() }),
 }))
 
 vi.mock('@react-three/drei', () => ({

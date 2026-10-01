@@ -1,231 +1,134 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { Menu, X } from 'lucide-react'
 import { useResumeModal } from '@/contexts/ResumeModalContext'
+import { useScrollToId } from '@/hooks/useScrollToId'
+import { cn } from '@/lib/utils'
 
-type SubLink = { label: string; href: string }
+type NavItem = { label: string; href: string }
 
-type NavLink = {
-  label: string
-  href: string
-  isAnchor: boolean
-  children?: SubLink[]
-}
-
-const navLinks: NavLink[] = [
-  {
-    label: 'Home',
-    href: '/',
-    isAnchor: false,
-    children: [
-      { label: 'About', href: '/#about' },
-      { label: 'Skills', href: '/#skills' },
-    ],
-  },
-  { label: 'Experience', href: '/experience', isAnchor: false },
-  { label: 'Projects', href: '/projects', isAnchor: false },
-  { label: 'Leadership', href: '/leadership', isAnchor: false },
+const navItems: NavItem[] = [
+  { label: 'About', href: '/#about' },
+  { label: 'Projects', href: '/projects' },
+  { label: 'Experience', href: '/experience' },
+  { label: 'Leadership', href: '/leadership' },
+  { label: 'Contact', href: '/#contact' },
 ]
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [mobileHomeExpanded, setMobileHomeExpanded] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const reduced = useReducedMotion()
+  const scrollToId = useScrollToId()
   const { openModal } = useResumeModal()
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 32)
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
     setMenuOpen(false)
-    setMobileHomeExpanded(false)
   }, [location])
 
-  function scrollTo(id: string) {
-    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
+  function handleClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    if (!href.startsWith('/#')) return
+    e.preventDefault()
+    setMenuOpen(false)
+    const id = href.slice(2)
+    if (location.pathname === '/') scrollToId(id)
+    else navigate('/', { state: { scrollTo: id } })
   }
 
-  function handleAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-    if (href.startsWith('/#')) {
-      e.preventDefault()
-      setMenuOpen(false)
-      const id = href.slice(2)
-      if (location.pathname === '/') {
-        scrollTo(id)
-      } else {
-        navigate('/', { state: { scrollTo: id } })
-      }
-    }
+  function isCurrent(href: string) {
+    return (
+      !href.startsWith('/#') &&
+      (location.pathname === href || location.pathname.startsWith(`${href}/`))
+    )
   }
+
+  const linkClass = (href: string) =>
+    cn(
+      'font-display font-medium transition-colors',
+      isCurrent(href)
+        ? 'text-fg underline decoration-cobalt decoration-2 underline-offset-8'
+        : 'text-muted hover:text-fg'
+    )
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled ? 'bg-paper/90 backdrop-blur-md border-b border-ink/5 shadow-sm' : 'bg-transparent'
-      }`}
-      role="banner"
+      className={cn(
+        'fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow] duration-300',
+        scrolled || menuOpen
+          ? 'bg-canvas/90 shadow-[0_1px_0_rgb(247_247_252/0.08)]'
+          : 'bg-transparent'
+      )}
     >
-      <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="Main navigation">
-        <Link
-          to="/"
-          className="font-display font-semibold text-lg tracking-tight text-ink hover:text-accent transition-colors"
-          aria-label="Kymani Jarrett — home"
-        >
-          KJ
+      <nav aria-label="Main" className="flex h-16 items-center justify-between px-gutter">
+        <Link to="/" className="font-display text-lg font-bold text-fg [font-stretch:112%]">
+          Kymani Jarrett
         </Link>
 
-        {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-6" role="list">
-          {navLinks.map(({ label, href, isAnchor, children }) => (
-            <li key={label} className="relative group">
-              {children ? (
-                <>
-                  <Link
-                    to={href}
-                    className={`text-sm font-medium transition-colors ${
-                      location.pathname === '/' ? 'text-ink' : 'text-muted hover:text-ink'
-                    }`}
-                  >
-                    {label}
-                  </Link>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-150 z-50">
-                    <div className="bg-paper rounded-xl shadow-lg border border-ink/8 py-1.5 min-w-[110px]">
-                      {children.map((sub) => (
-                        <a
-                          key={sub.label}
-                          href={sub.href}
-                          onClick={(e) => handleAnchorClick(e, sub.href)}
-                          className="block px-4 py-2 text-sm text-muted hover:text-ink hover:bg-ink/4 transition-colors"
-                        >
-                          {sub.label}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : isAnchor ? (
-                <a
-                  href={href}
-                  onClick={(e) => handleAnchorClick(e, href)}
-                  className="text-sm font-medium text-muted hover:text-ink transition-colors"
-                >
-                  {label}
-                </a>
-              ) : (
+        <div className="hidden items-center gap-8 md:flex">
+          <ul className="flex items-center gap-7">
+            {navItems.map(({ label, href }) => (
+              <li key={label}>
                 <Link
                   to={href}
-                  className={`text-sm font-medium transition-colors ${
-                    location.pathname === href || location.pathname.startsWith(href + '/')
-                      ? 'text-ink'
-                      : 'text-muted hover:text-ink'
-                  }`}
+                  onClick={(e) => handleClick(e, href)}
+                  aria-current={isCurrent(href) ? 'page' : undefined}
+                  className={linkClass(href)}
                 >
                   {label}
                 </Link>
-              )}
-            </li>
-          ))}
-        </ul>
-
-        <div className="hidden md:flex items-center gap-3">
-          <a
-            href="https://github.com/kymanirjarrett"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-medium text-muted hover:text-ink transition-colors"
-            aria-label="GitHub profile"
-          >
-            GitHub
-          </a>
-          <button
-            onClick={openModal}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-ink text-paper text-sm font-medium rounded-full hover:bg-ink/80 transition-colors"
-          >
-            Resume
+              </li>
+            ))}
+          </ul>
+          <button type="button" onClick={openModal} className="btn-quiet py-2">
+            View resume
           </button>
         </div>
 
-        {/* Mobile hamburger */}
         <button
-          className="md:hidden p-2 text-ink"
+          type="button"
+          className="-mr-2 p-2 text-fg md:hidden"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
           onClick={() => setMenuOpen((v) => !v)}
         >
-          <span className="block w-5 h-px bg-current mb-1.5" />
-          <span className="block w-5 h-px bg-current mb-1.5" />
-          <span className="block w-5 h-px bg-current" />
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </nav>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-paper border-t border-ink/5 px-6 py-6">
-          <ul className="flex flex-col gap-1 mb-6" role="list">
-            {navLinks.map(({ label, href, isAnchor, children }) => (
+        <div id="mobile-menu" className="border-t border-fg/10 px-gutter pb-8 pt-4 md:hidden">
+          <ul className="mb-6 flex flex-col">
+            {navItems.map(({ label, href }) => (
               <li key={label}>
-                {children ? (
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <Link
-                        to={href}
-                        className="py-2.5 text-base font-medium text-ink"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        {label}
-                      </Link>
-                      <button
-                        onClick={() => setMobileHomeExpanded((v) => !v)}
-                        className="p-2 text-muted"
-                        aria-label="Toggle sub-links"
-                      >
-                        <span className={`block transition-transform duration-200 ${mobileHomeExpanded ? 'rotate-180' : ''}`}>
-                          ▾
-                        </span>
-                      </button>
-                    </div>
-                    {mobileHomeExpanded && (
-                      <div className="pl-4 flex flex-col gap-0.5 mb-1">
-                        {children.map((sub) => (
-                          <a
-                            key={sub.label}
-                            href={sub.href}
-                            onClick={(e) => handleAnchorClick(e, sub.href)}
-                            className="py-2 text-sm text-muted"
-                          >
-                            {sub.label}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : isAnchor ? (
-                  <a
-                    href={href}
-                    onClick={(e) => handleAnchorClick(e, href)}
-                    className="block py-2.5 text-base font-medium text-ink"
-                  >
-                    {label}
-                  </a>
-                ) : (
-                  <Link to={href} className="block py-2.5 text-base font-medium text-ink">
-                    {label}
-                  </Link>
-                )}
+                <Link
+                  to={href}
+                  onClick={(e) => handleClick(e, href)}
+                  aria-current={isCurrent(href) ? 'page' : undefined}
+                  className="block py-3 font-display text-xl font-semibold text-fg"
+                >
+                  {label}
+                </Link>
               </li>
             ))}
           </ul>
           <button
-            onClick={() => { setMenuOpen(false); openModal() }}
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-ink text-paper text-sm font-medium rounded-full"
+            type="button"
+            onClick={() => {
+              setMenuOpen(false)
+              openModal()
+            }}
+            className="btn-quiet"
           >
-            View Resume
+            View resume
           </button>
         </div>
       )}

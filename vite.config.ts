@@ -13,10 +13,11 @@ export default defineConfig({
     target: 'esnext',
     rollupOptions: {
       output: {
+        // three.js is deliberately left out of manualChunks. Naming it here made
+        // Vite preload it from index.html, defeating the lazy import of the sphere
+        // and ShaderGradient. Left alone, Rollup keeps it in the lazy chunks.
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-          'motion-vendor': ['framer-motion'],
         },
       },
     },

@@ -1,73 +1,52 @@
-import { motion } from 'framer-motion'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-
-const stats = [
-  { value: '3.7', label: 'GPA / 4.0' },
-  { value: '3×', label: "Dean's List" },
-  { value: 'May 2028', label: 'Graduation' },
-  { value: '2', label: 'Majors' },
-]
-
-const viewport = { once: false, amount: 0.15 }
-
 export default function About() {
-  const reduced = useReducedMotion()
-  const anim = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 24 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport,
-          transition: { duration: 0.55, delay, ease: 'easeOut' },
-        }
-
   return (
-    <section id="about" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        <motion.div {...anim(0)}>
-          <p className="font-mono text-xs text-muted uppercase tracking-widest mb-4">About</p>
-          <h2 className="font-display font-bold text-3xl md:text-4xl text-ink mb-6 text-balance">
-            Cloud to code.<br />Data to security.
-          </h2>
-          <div className="space-y-4 text-muted text-lg leading-relaxed">
-            <p>
-              I'm a software engineer at the University of Cincinnati studying Information
-              Technology and Cybersecurity. I've shipped enterprise ETL pipelines on AWS
-              at The J.M. Smucker Company, built full-stack applications for Fortune 500
-              clients at ITSC, and designed AI-powered products from the ground up.
-            </p>
-            <p>
-              I work across the stack — infrastructure, APIs, UIs, data pipelines, and
-              security tooling — because the best solutions usually live at the
-              intersection. I'm drawn to systems that are observable, products that
-              actually scale, and software that doesn't become a liability over time.
-            </p>
-            <p>
-              Open to new-grad roles in cloud engineering, DevOps, full-stack development,
-              and security.
-            </p>
-          </div>
-        </motion.div>
+    <section id="about" aria-labelledby="about-heading" className="page-grid gap-y-10 py-section">
+      <h2 id="about-heading" className="heading-display col-span-12 text-h2">
+        About me
+      </h2>
 
-        <motion.div
-          className="grid grid-cols-2 gap-4"
-          {...anim(0.1)}
-        >
-          {stats.map(({ value, label }) => (
-            <div key={label} className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-ink/5">
-              <p className="font-display font-bold text-4xl text-accent mb-1">{value}</p>
-              <p className="text-sm text-muted">{label}</p>
-            </div>
-          ))}
-          <div className="col-span-2 bg-ink rounded-2xl p-6 text-paper">
-            <p className="font-mono text-xs text-paper/40 uppercase tracking-widest mb-2">University</p>
-            <p className="font-display font-semibold text-xl leading-tight">
-              B.Sc. Information Technology<br />B.Sc. Cybersecurity
-            </p>
-            <p className="text-paper/60 text-sm mt-2">University of Cincinnati</p>
-          </div>
-        </motion.div>
+      <div className="col-span-12 max-w-measure space-y-5 text-lead lg:col-span-7">
+        <p>
+          I'm a double major in Information Technology (Software Application Development) and
+          Cybersecurity at the University of Cincinnati, graduating May 2028.
+        </p>
+        <p>
+          Over the last two years, I've spent my time building responsive user interfaces in React
+          and backend Node APIs at the UC IT Solutions Center, and engineering and optimizing AWS
+          data pipelines and CI/CD at The J.M. Smucker Co. Outside of work, I build projects to
+          support things I'm passionate about, and automate processes to make life easier for those
+          around me!
+        </p>
+        <p>
+          Currently looking for a Summer 2027 internship or co-op in cloud, platform, or security
+          engineering.
+        </p>
+      </div>
+
+      <div className="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-3 lg:col-start-10 lg:self-start">
+        {/* WebP at two sizes for normal and high-density screens; the PNG is the fallback. */}
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/headshot-480.webp 480w, /headshot-960.webp 960w"
+            sizes="(min-width: 1024px) 24vw, (min-width: 640px) 60vw, 100vw"
+          />
+          <img
+            src="/professionalheadshot.png"
+            alt="Portrait of Kymani Jarrett"
+            width={1086}
+            height={1448}
+            loading="lazy"
+            decoding="async"
+            className="aspect-[3/4] w-full rounded-panel object-cover"
+          />
+        </picture>
+        <div className="mt-6 border-t border-fg/15 pt-6">
+          <p className="font-display font-semibold">University of Cincinnati</p>
+          <p className="mt-1 text-muted">
+            B.Sc. in Information Technology and B.Sc. in Cybersecurity. 3.7 GPA, 3× Dean's List.
+          </p>
+        </div>
       </div>
     </section>
   )

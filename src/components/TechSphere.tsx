@@ -1,131 +1,110 @@
-import { useRef, useMemo, Suspense } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Billboard, Html, OrbitControls } from '@react-three/drei'
-import * as THREE from 'three'
+import type * as THREE from 'three'
 import { fibonacci3D } from '@/lib/utils'
-import { sphereLogos } from '@/data/skills'
+import { sphereLogos } from '@/data/sphereLogos'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import LogoMark from './LogoMark'
 
 const SPHERE_RADIUS = 2.2
 
-function LogoSprite({ position, name, slug }: { position: [number, number, number]; name: string; slug: string }) {
-  return (
-    <Billboard position={[position[0] * SPHERE_RADIUS, position[1] * SPHERE_RADIUS, position[2] * SPHERE_RADIUS]}>
-      <Html
-        center
-        style={{ pointerEvents: 'none', userSelect: 'none' }}
-        distanceFactor={6}
-      >
-        <div className="w-10 h-10 flex items-center justify-center" title={name} aria-label={name}>
-          <img
-            src={`https://cdn.simpleicons.org/${slug}/3B49DF`}
-            alt={name}
-            width={28}
-            height={28}
-            style={{ filter: 'drop-shadow(0 0 6px rgba(59,73,223,0.4))' }}
-            loading="lazy"
-            onError={(e) => {
-              const el = e.currentTarget as HTMLImageElement
-              el.style.display = 'none'
-            }}
-          />
-        </div>
-      </Html>
-    </Billboard>
-  )
-}
+// Each logo sits on a paper disc so it stays legible over every frame of the
+// gradient behind the hero, from the brightest to the darkest.
+const discClass =
+  'flex h-11 w-11 items-center justify-center rounded-full bg-surface/85 text-cobalt-light ring-1 ring-fg/10 shadow-[0_2px_10px_rgb(0_0_0/0.35)]'
 
 function SphereGroup() {
   const groupRef = useRef<THREE.Group>(null)
-  const reduced = useReducedMotion()
-  const { gl } = useThree()
-
-  gl.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
   const positions = useMemo(() => fibonacci3D(sphereLogos.length), [])
 
   useFrame((_, delta) => {
-    if (groupRef.current && !reduced) {
-      groupRef.current.rotation.y += delta * 0.12
-      groupRef.current.rotation.x += delta * 0.03
-    }
+    if (!groupRef.current) return
+    groupRef.current.rotation.y += delta * 0.12
+    groupRef.current.rotation.x += delta * 0.03
   })
 
   return (
     <group ref={groupRef}>
-      {sphereLogos.map((logo, i) => (
-        <LogoSprite key={logo.slug} position={positions[i]} name={logo.name} slug={logo.slug} />
-      ))}
+      {sphereLogos.map((logo, i) => {
+        const [x, y, z] = positions[i]
+        return (
+          <Billboard
+            key={logo.name}
+            position={[x * SPHERE_RADIUS, y * SPHERE_RADIUS, z * SPHERE_RADIUS]}
+          >
+            <Html center distanceFactor={6} style={{ pointerEvents: 'none', userSelect: 'none' }}>
+              <div className={discClass} title={logo.name}>
+                <LogoMark logo={logo} />
+              </div>
+            </Html>
+          </Billboard>
+        )
+      })}
     </group>
   )
 }
 
-function Scene() {
-  const reduced = useReducedMotion()
-
-  return (
-    <>
-      <ambientLight intensity={0.6} />
-      <pointLight position={[5, 5, 5]} intensity={0.8} color="#3B49DF" />
-      <pointLight position={[-5, -5, 5]} intensity={0.3} color="#FF7A45" />
-      <SphereGroup />
-      {!reduced && (
-        <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.4} autoRotate={false} />
-      )}
-    </>
-  )
+/** Stops rendering while the hero is off screen or the tab is hidden. */
+function FrameloopSwitch({ active }: { active: boolean }) {
+  const setFrameloop = useThree((state) => state.setFrameloop)
+  useEffect(() => {
+    setFrameloop(active ? 'always' : 'never')
+  }, [active, setFrameloop])
+  return null
 }
 
 function FallbackGrid() {
   return (
-    <div className="grid grid-cols-4 gap-4 p-8" aria-label="Technology logos">
+    <ul
+      className="grid grid-cols-4 gap-x-4 gap-y-5 p-6 sm:grid-cols-5"
+      aria-label="Technology logos"
+    >
       {sphereLogos.map((logo) => (
-        <div key={logo.slug} className="flex flex-col items-center gap-1" title={logo.name}>
-          <img
-            src={`https://cdn.simpleicons.org/${logo.slug}/3B49DF`}
-            alt={logo.name}
-            width={32}
-            height={32}
-            loading="lazy"
-            onError={(e) => {
-              const el = e.currentTarget as HTMLImageElement
-              el.style.display = 'none'
-            }}
-          />
-          <span className="text-xs text-muted font-mono text-center leading-tight">{logo.name}</span>
-        </div>
+        <li key={logo.name} className="flex flex-col items-center gap-1.5">
+          <span className={discClass}>
+            <LogoMark logo={logo} />
+          </span>
+          <span className="text-center text-small leading-tight text-muted">{logo.name}</span>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }
 
 interface TechSphereProps {
   webGLSupported: boolean
+  /** False pauses the render loop. */
+  active?: boolean
 }
 
-export default function TechSphere({ webGLSupported }: TechSphereProps) {
+export default function TechSphere({ webGLSupported, active = true }: TechSphereProps) {
   const reduced = useReducedMotion()
 
   if (!webGLSupported || reduced) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center">
         <FallbackGrid />
       </div>
     )
   }
 
   return (
-    <div className="w-full h-full" role="img" aria-label="Interactive 3D sphere of technology logos">
-      <Suspense fallback={<FallbackGrid />}>
-        <Canvas
-          camera={{ position: [0, 0, 6], fov: 50 }}
-          style={{ background: 'transparent' }}
-          gl={{ antialias: true, alpha: true }}
-          dpr={Math.min(window.devicePixelRatio, 2)}
-        >
-          <Scene />
-        </Canvas>
-      </Suspense>
+    <div
+      className="h-full w-full"
+      role="img"
+      aria-label="Interactive 3D sphere of technology logos"
+    >
+      <Canvas
+        camera={{ position: [0, 0, 6], fov: 50 }}
+        style={{ background: 'transparent' }}
+        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 2]}
+      >
+        <FrameloopSwitch active={active} />
+        <SphereGroup />
+        <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.4} />
+      </Canvas>
     </div>
   )
 }

@@ -1,25 +1,25 @@
-# Kymani Jarrett — Portfolio
+# Kymani Jarrett: Portfolio
 
-Personal portfolio site for Kymani Jarrett — Cloud & Data Engineer, Full-Stack Developer, Cybersecurity student at the University of Cincinnati.
+Personal site for Kymani Jarrett, a software engineer studying IT and Cybersecurity at the University of Cincinnati.
 
-**Live:** [kymanirjarrett.vercel.app](https://kymanirjarrett.vercel.app)
+**Live:** [kymanij.vercel.app](https://kymanij.vercel.app)
 
 ---
 
 ## Stack
 
-| Concern   | Tech                                             |
-| --------- | ------------------------------------------------ |
-| Build     | Vite 6                                           |
-| Framework | React 18, TypeScript (strict)                    |
-| Styling   | Tailwind CSS                                     |
-| Routing   | React Router v7                                  |
-| 3D        | react-three-fiber + @react-three/drei (Three.js) |
-| Animation | Framer Motion                                    |
-| Icons     | Simple Icons (CDN), lucide-react                 |
-| Hosting   | Vercel                                           |
-| CI        | GitHub Actions                                   |
-| Tests     | Vitest + React Testing Library                   |
+| Concern   | Tech                                                               |
+| --------- | ------------------------------------------------------------------ |
+| Build     | Vite 6                                                             |
+| Framework | React 18, TypeScript (strict)                                      |
+| Styling   | Tailwind CSS with design tokens, self-hosted variable fonts        |
+| Routing   | React Router v7                                                    |
+| Motion    | Motion (scroll-linked), Lenis (smooth scroll)                      |
+| 3D        | react-three-fiber, drei, ShaderGradient                            |
+| Icons     | simple-icons and Devicon paths bundled at build time, lucide-react |
+| Tests     | Vitest + React Testing Library, Playwright visual snapshots        |
+| CI        | GitHub Actions                                                     |
+| Hosting   | Vercel                                                             |
 
 ---
 
@@ -35,12 +35,31 @@ npm run dev        # http://localhost:5173
 Other commands:
 
 ```bash
-npm run build      # production build → dist/
-npm run typecheck  # TypeScript strict check
+npm run build      # production build to dist/
+npm run typecheck  # tsc -b across app, node, and e2e configs
 npm run lint       # ESLint
-npm run test       # Vitest (run once)
-npm run test:watch # Vitest watch mode
+npm test           # Vitest, run once
+npm run test:e2e   # Playwright snapshots of key routes (build first)
 ```
+
+---
+
+## Design decisions
+
+- **Full-width layout.** Every section sits on a 12-column grid between fluid gutters (`clamp(1.25rem, 4vw, 4rem)`) with no max-width cap. The only width limit is the ~68ch prose measure, so large monitors get larger type instead of empty margins.
+- **Palette, dark only.** A navy canvas `#0D0D24` with `#141432` for raised surfaces, paper-white `#F7F7FC` text, and cobalt `#2F54EB` as the signature color for fills and lines. Cobalt is 3.26:1 on the canvas, enough for UI but not for text, so links use a lighter cobalt `#7F96FF` (7.01:1). Violet `#7B4DFF` partners cobalt in the gradient, and ember `#FF7F11` is reserved for the primary action and the "in active development" marker, always as a fill with ink text. One theme instead of two keeps every color decision checked once.
+- **Type.** Mona Sans (variable width and weight) for headings, set wide and heavy; Atkinson Hyperlegible Next for body text.
+- **Motion responds to the reader.** Section motion is scrubbed by scroll position with Motion's `useScroll`: project rows slide in from alternating sides, the experience timeline draws down the page, skill groups assemble, and the Spotlight strip moves sideways as you scroll down. The strip starts drifting before the section pins and eases in and out, so vertical scrolling hands off to horizontal instead of stopping dead at the lock point. The only autonomous motion is the hero load sequence, the sphere's idle rotation, the gradient's drift, the rotating descriptor, and the Spotlight highlight, which only advances while the section is on screen.
+- **Reduced motion is a first-class mode.** `useReducedMotion` is the single source of truth. Under `prefers-reduced-motion` everything renders in its final position, Lenis turns itself off, the sphere becomes a logo grid, and the gradient becomes a static image.
+
+---
+
+## Performance
+
+- three.js, the sphere, and ShaderGradient load lazily. Both WebGL scenes stop rendering when the hero is off screen or the tab is hidden.
+- The static gradient (12 KB WebP) stands in on mobile, under reduced motion, and without WebGL, and fills the hero while the live gradient loads.
+- Initial JavaScript is ~124 KB gzipped. An earlier `manualChunks` entry for three.js made Vite preload it on every page, so it was removed.
+- Lighthouse (desktop): home 99 performance / 100 accessibility; case studies 100 / 100.
 
 ---
 
@@ -48,84 +67,64 @@ npm run test:watch # Vitest watch mode
 
 ```text
 src/
-  components/   # Nav, Footer, TechSphere, RotatingDescriptor, ResumeModal
-  contexts/     # ResumeModalContext — shared modal state across the app
-  sections/     # Home page sections: Hero, Spotlight, About, Work, Skills, Contact
-  pages/        # Full pages (lazy-loaded):
-                #   Home, ExperiencePage, LeadershipPage, ProjectsPage,
-                #   VigilCaseStudy, ClausifyCaseStudy
-  data/         # Typed content modules — edit content here, not in JSX
-  hooks/        # useReducedMotion, useWebGL
-  lib/          # utils (fibonacci3D)
+  components/   # Nav, Footer, TechSphere, HeroAtmosphere, ShaderGradientScene,
+                # ProjectList, ExperienceTimeline, LeadershipList, ResumeModal, ...
+  contexts/     # ResumeModalContext: shared modal state
+  sections/     # Home page sections, in page order
+  pages/        # Routed pages (lazy-loaded except Home)
+  data/         # Typed content modules: edit content here, not in JSX
+  hooks/        # useReducedMotion, useMediaQuery, useInViewport, usePageVisible, ...
+  lib/          # utils, Devicon logo paths
   test/         # Vitest + RTL tests
+e2e/            # Playwright visual snapshots
 
 public/
-  resume.pdf    # One-page resume (served via modal PDF preview)
-  favicon.svg
+  resume.pdf          # Shown in the resume modal and offered as a download
+  hero-gradient.webp  # Static export of the hero gradient
+  og-image.png        # 1200x630 social preview
 
-.github/workflows/ci.yml   # Lint + typecheck + test + build on every PR
-vercel.json                 # SPA rewrites + security headers (X-Frame-Options: SAMEORIGIN)
+.github/workflows/ci.yml  # Lint, typecheck, test, build; then Playwright snapshots
+vercel.json               # SPA rewrites and security headers
 ```
 
 ---
 
 ## Routes
 
-| Route                | Description                                                          |
-| -------------------- | -------------------------------------------------------------------- |
-| `/`                  | Home — hero, spotlight reel, projects teaser, about, skills, contact |
-| `/experience`        | Full experience page with detailed role breakdowns                   |
-| `/leadership`        | Leadership & community involvement                                   |
-| `/projects`          | Projects landing page with live links and case study links           |
-| `/projects/vigil`    | Vigil case study (lazy-loaded)                                       |
-| `/projects/clausify` | Clausify case study (lazy-loaded)                                    |
-
----
-
-## Navigation
-
-The nav renders four items — **Home**, **Experience**, **Projects**, **Leadership** — plus a **Resume** button.
-
-- **Home** is a `<Link to="/">` that also exposes a hover dropdown (desktop) or expandable sub-list (mobile) with **About** and **Skills** anchor links.
-- Anchor links (`/#about`, `/#skills`) use `scrollIntoView` when already on `/`; from any other route they use React Router `navigate('/', { state: { scrollTo } })` so the home page scrolls to the section after mounting — no full-page reload.
-- The **Resume** button opens a modal with a PDF preview and a download link. Closing works via the ✕ button, Escape key, or backdrop click. Focus is trapped within the dialog while it's open.
-
----
-
-## Accessibility & motion
-
-- All animated elements respect `prefers-reduced-motion`: the 3D sphere, Spotlight reel, scroll reveals, and rotating descriptor each have static fallbacks.
-- Scroll animations are bidirectional — content animates in on scroll down and out on scroll up (`once: false`).
-- The 3D sphere gracefully falls back to a 2D logo grid when WebGL is unavailable.
-- Semantic HTML, logical heading order, visible focus states, and keyboard navigation throughout.
-- Spotlight reel is fully keyboard-navigable (arrow keys or buttons for prev/next, dot indicators labelled).
-- Resume modal has a proper focus trap and restores focus to the trigger element on close.
+| Route                | Description                                                                |
+| -------------------- | -------------------------------------------------------------------------- |
+| `/`                  | Hero, highlights, about, projects, experience, leadership, skills, contact |
+| `/experience`        | Full experience timeline                                                   |
+| `/leadership`        | All leadership roles                                                       |
+| `/projects`          | All projects                                                               |
+| `/projects/vigil`    | Vigil case study                                                           |
+| `/projects/clausify` | Clausify case study                                                        |
 
 ---
 
 ## Content
 
-All content lives in typed data modules under `src/data/`. To update a role, project, or skill, edit the relevant file — no JSX changes needed.
+All content lives in typed modules under `src/data/`.
 
-| File                 | Controls                                                     |
-| -------------------- | ------------------------------------------------------------ |
-| `data/projects.ts`   | Projects: title, description, stack, `liveUrl`, GitHub link  |
-| `data/experience.ts` | Work history: role, company, period, bullets, stack          |
-| `data/leadership.ts` | Leadership & community roles                                 |
-| `data/skills.ts`     | Skill grid + 3D sphere logo list                             |
-| `data/spotlight.ts`  | Spotlight reel tiles (home page carousel)                    |
-
-### Adding a project live URL
-
-In `data/projects.ts`, set `liveUrl` to the deployed URL. If the project isn't live yet, set `liveUrl: null` and the projects page will show a "Deploying soon" pill automatically.
+| File                  | Controls                                                                          |
+| --------------------- | --------------------------------------------------------------------------------- |
+| `data/projects.ts`    | Projects: description, stack, case study, live and repo links, development status |
+| `data/experience.ts`  | Roles: title, company, period, bullets, stack                                     |
+| `data/leadership.ts`  | Leadership roles; the home page shows the first four                              |
+| `data/skills.ts`      | Skill categories                                                                  |
+| `data/sphereLogos.ts` | Logos on the 3D sphere                                                            |
+| `data/spotlight.ts`   | Highlights strip tiles                                                            |
 
 ---
 
-## Deploying to Vercel
+## CI
 
-1. Import the repo in [vercel.com/new](https://vercel.com/new).
-2. Framework preset: **Vite** (auto-detected).
-3. Build command: `npm run build` · Output directory: `dist`.
-4. The `vercel.json` in this repo handles SPA rewrites, security headers, and immutable asset caching. `X-Frame-Options` is set to `SAMEORIGIN` (not `DENY`) so the resume PDF renders inside the modal iframe.
+Every push to `main` or `feat/**` and every pull request runs lint, typecheck, unit tests, and a production build on Node 24. A second job builds the site, captures full-page Playwright screenshots of `/`, `/projects/vigil`, and `/projects/clausify` at 1280, 1728, and 2560px, checks for horizontal overflow, and uploads the screenshots as an artifact.
 
-To swap in a custom domain, update the `canonical`, `og:url`, and `twitter:image` meta tags in `index.html`.
+---
+
+## Deploying
+
+Vercel auto-detects Vite (build `npm run build`, output `dist`). `vercel.json` handles SPA rewrites, security headers, and immutable asset caching. `X-Frame-Options` is `SAMEORIGIN` so the resume PDF renders inside the modal iframe.
+
+When the domain changes, update `canonical`, `og:url`, `og:image`, `twitter:image`, and the JSON-LD `url` in `index.html`.
