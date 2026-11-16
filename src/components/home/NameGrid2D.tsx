@@ -38,7 +38,7 @@ export default function NameGrid2D({ graph, reduced, className }: NameGrid2DProp
               backgroundColor: color,
               transition: reduced
                 ? 'none'
-                : 'background-color 380ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                : 'background-color 380ms cubic-bezier(0.16, 1, 0.3, 1)',
               transitionDelay: reduced ? undefined : `${col * 9}ms`,
             }}
           />
