@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
-import { useScrollToId } from '@/hooks/useScrollToId'
+import PixelMark from '@/components/PixelMark'
+import { SocialLinks } from '@/components/SocialIcons'
+import { useCommandMenu } from '@/contexts/CommandMenuContext'
+import { isApplePlatform } from '@/lib/platform'
 import { cn } from '@/lib/utils'
 
-type NavItem = { label: string; href: string }
-
-const navItems: NavItem[] = [
-  { label: 'About', href: '/#about' },
+const navItems = [
+  { label: 'About', href: '/about' },
   { label: 'Projects', href: '/projects' },
   { label: 'Experience', href: '/experience' },
   { label: 'Leadership', href: '/leadership' },
-  { label: 'Contact', href: '/#contact' },
 ]
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [apple, setApple] = useState(false)
   const location = useLocation()
-  const navigate = useNavigate()
-  const scrollToId = useScrollToId()
+  const commandMenu = useCommandMenu()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -32,57 +32,66 @@ export default function Nav() {
     setMenuOpen(false)
   }, [location])
 
-  function handleClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-    if (!href.startsWith('/#')) return
-    e.preventDefault()
-    setMenuOpen(false)
-    const id = href.slice(2)
-    if (location.pathname === '/') scrollToId(id)
-    else navigate('/', { state: { scrollTo: id } })
-  }
+  // Read after mount: the platform is only known in the browser.
+  useEffect(() => setApple(isApplePlatform()), [])
 
   function isCurrent(href: string) {
-    return (
-      !href.startsWith('/#') &&
-      (location.pathname === href || location.pathname.startsWith(`${href}/`))
-    )
+    return location.pathname === href || location.pathname.startsWith(`${href}/`)
   }
 
-  const linkClass = (href: string) =>
-    cn(
-      'font-display font-medium transition-colors',
-      isCurrent(href)
-        ? 'text-ink underline decoration-accent decoration-2 underline-offset-8'
-        : 'text-muted hover:text-ink'
-    )
+  const shortcut = apple ? '⌘K' : 'Ctrl K'
 
   return (
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow] duration-300',
-        scrolled || menuOpen ? 'bg-canvas/90 shadow-[0_1px_0_rgb(31_42_36/0.08)]' : 'bg-transparent'
+        scrolled || menuOpen
+          ? 'bg-canvas/90 shadow-[0_1px_0_rgb(31_42_36/0.08)] backdrop-blur-sm'
+          : 'bg-transparent'
       )}
     >
       <nav aria-label="Main" className="flex h-16 items-center justify-between px-gutter">
-        <Link to="/" className="font-display text-lg font-bold text-ink">
-          Kymani Jarrett
+        <Link
+          to="/"
+          aria-label="Kymani Jarrett, home"
+          className="-m-2 rounded-md p-2 text-ink transition-colors hover:text-accent"
+        >
+          <PixelMark className="h-6 w-auto" />
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
           <ul className="flex items-center gap-7">
             {navItems.map(({ label, href }) => (
-              <li key={label}>
+              <li key={href}>
                 <Link
                   to={href}
-                  onClick={(e) => handleClick(e, href)}
                   aria-current={isCurrent(href) ? 'page' : undefined}
-                  className={linkClass(href)}
+                  className={cn(
+                    'font-display font-medium transition-colors',
+                    isCurrent(href)
+                      ? 'text-ink underline decoration-accent decoration-2 underline-offset-8'
+                      : 'text-muted hover:text-ink'
+                  )}
                 >
                   {label}
                 </Link>
               </li>
             ))}
           </ul>
+          <div className="flex items-center gap-2">
+            <SocialLinks />
+            <button
+              type="button"
+              onClick={commandMenu.toggle}
+              aria-keyshortcuts="Meta+K Control+K"
+              className="ml-1 rounded-md px-2 py-1 font-mono text-[0.75rem] text-muted ring-1 ring-inset ring-ink/15 transition-colors hover:text-ink hover:ring-ink/30"
+            >
+              <span className="sr-only">Open command menu</span>
+              <kbd aria-hidden="true" className="font-mono">
+                {shortcut}
+              </kbd>
+            </button>
+          </div>
         </div>
 
         <button
@@ -101,10 +110,9 @@ export default function Nav() {
         <div id="mobile-menu" className="border-t border-ink/10 px-gutter pb-8 pt-4 md:hidden">
           <ul className="mb-6 flex flex-col">
             {navItems.map(({ label, href }) => (
-              <li key={label}>
+              <li key={href}>
                 <Link
                   to={href}
-                  onClick={(e) => handleClick(e, href)}
                   aria-current={isCurrent(href) ? 'page' : undefined}
                   className="block py-3 font-display text-xl font-semibold text-ink"
                 >
@@ -113,6 +121,7 @@ export default function Nav() {
               </li>
             ))}
           </ul>
+          <SocialLinks className="-ml-2.5" size={22} />
         </div>
       )}
     </header>
