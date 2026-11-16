@@ -41,7 +41,7 @@ export default function About() {
             className="aspect-[3/4] w-full rounded-panel object-cover"
           />
         </picture>
-        <div className="mt-6 border-t border-fg/15 pt-6">
+        <div className="mt-6 border-t border-ink/15 pt-6">
           <p className="font-display font-semibold">University of Cincinnati</p>
           <p className="mt-1 text-muted">
             B.Sc. in Information Technology and B.Sc. in Cybersecurity. 3.7 GPA, 3× Dean's List.

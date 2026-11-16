@@ -54,21 +54,19 @@ export default function Nav() {
     cn(
       'font-display font-medium transition-colors',
       isCurrent(href)
-        ? 'text-fg underline decoration-cobalt decoration-2 underline-offset-8'
-        : 'text-muted hover:text-fg'
+        ? 'text-ink underline decoration-accent decoration-2 underline-offset-8'
+        : 'text-muted hover:text-ink'
     )
 
   return (
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow] duration-300',
-        scrolled || menuOpen
-          ? 'bg-canvas/90 shadow-[0_1px_0_rgb(247_247_252/0.08)]'
-          : 'bg-transparent'
+        scrolled || menuOpen ? 'bg-canvas/90 shadow-[0_1px_0_rgb(31_42_36/0.08)]' : 'bg-transparent'
       )}
     >
       <nav aria-label="Main" className="flex h-16 items-center justify-between px-gutter">
-        <Link to="/" className="font-display text-lg font-bold text-fg [font-stretch:112%]">
+        <Link to="/" className="font-display text-lg font-bold text-ink">
           Kymani Jarrett
         </Link>
 
@@ -94,7 +92,7 @@ export default function Nav() {
 
         <button
           type="button"
-          className="-mr-2 p-2 text-fg md:hidden"
+          className="-mr-2 p-2 text-ink md:hidden"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
@@ -105,7 +103,7 @@ export default function Nav() {
       </nav>
 
       {menuOpen && (
-        <div id="mobile-menu" className="border-t border-fg/10 px-gutter pb-8 pt-4 md:hidden">
+        <div id="mobile-menu" className="border-t border-ink/10 px-gutter pb-8 pt-4 md:hidden">
           <ul className="mb-6 flex flex-col">
             {navItems.map(({ label, href }) => (
               <li key={label}>
@@ -113,7 +111,7 @@ export default function Nav() {
                   to={href}
                   onClick={(e) => handleClick(e, href)}
                   aria-current={isCurrent(href) ? 'page' : undefined}
-                  className="block py-3 font-display text-xl font-semibold text-fg"
+                  className="block py-3 font-display text-xl font-semibold text-ink"
                 >
                   {label}
                 </Link>
