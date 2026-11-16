@@ -36,9 +36,7 @@ export default function NameGrid2D({ graph, reduced, className }: NameGrid2DProp
             className="aspect-square rounded-[18%]"
             style={{
               backgroundColor: color,
-              transition: reduced
-                ? 'none'
-                : 'background-color 380ms cubic-bezier(0.16, 1, 0.3, 1)',
+              transition: reduced ? 'none' : 'background-color 380ms cubic-bezier(0.16, 1, 0.3, 1)',
               transitionDelay: reduced ? undefined : `${col * 9}ms`,
             }}
           />
