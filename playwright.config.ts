@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 // Two suites: visual snapshots of key routes at three desktop widths (uploaded
 // by CI so reviewers can compare layouts across pull requests), and navigation
-// checks that run with motion on.
+// and command menu checks.
 export default defineConfig({
   testDir: './e2e',
   outputDir: './test-results',
