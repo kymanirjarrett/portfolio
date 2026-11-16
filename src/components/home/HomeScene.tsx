@@ -48,7 +48,7 @@ export function NameView({ graph, reduced, className }: NameViewProps) {
 
 export function PalmView({ reduced, className }: { reduced: boolean; className?: string }) {
   return (
-    <View className={className}>
+    <View id="palm-view" className={className}>
       <PalmTree reduced={reduced} />
     </View>
   )

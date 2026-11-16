@@ -60,11 +60,11 @@ export default function Home() {
     />
   )
   const poster = wide ? (
-    <PalmPoster className="pointer-events-none absolute bottom-0 right-0 h-[92%] w-auto max-w-none" />
+    <PalmPoster className="pointer-events-none absolute bottom-0 right-0 h-[94%] w-auto max-w-none" />
   ) : (
     // Small screens: smaller, behind the text at the top right, faded enough
     // that text over it keeps AA contrast.
-    <PalmPoster className="pointer-events-none absolute -right-[18vw] top-10 h-[58svh] w-auto max-w-none opacity-[0.22]" />
+    <PalmPoster className="pointer-events-none absolute -right-[34vw] -top-[6svh] h-[56svh] w-auto max-w-none opacity-25" />
   )
 
   return (
