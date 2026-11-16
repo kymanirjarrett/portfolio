@@ -2,6 +2,7 @@ import { lazy, Suspense, useRef, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import NameGrid2D from '@/components/home/NameGrid2D'
 import { SocialLinks } from '@/components/SocialIcons'
+import { useIdleStage } from '@/hooks/useIdleStage'
 import { useInViewport } from '@/hooks/useInViewport'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useNameToggle } from '@/hooks/useNameToggle'
@@ -51,6 +52,8 @@ export default function Home() {
   const onScreen = useInViewport(mainRef)
   const visible = usePageVisible()
   const { graph, handlers } = useNameToggle()
+  // 1: canvas and name, 2: palm. Each mounts in its own idle period.
+  const stage = useIdleStage(2, webGL)
 
   const nameGrid = (
     <NameGrid2D
@@ -75,7 +78,7 @@ export default function Home() {
     >
       {/* Scenery sits behind the text (z-0); the canvas covers the whole hero. */}
       <div aria-hidden="true" className="absolute inset-0 z-0">
-        {webGL && wide ? (
+        {webGL && wide && stage >= 2 ? (
           <Suspense fallback={poster}>
             <PalmView reduced={reduced} className="absolute bottom-0 right-0 h-[94%] w-[44vw]" />
           </Suspense>
@@ -83,7 +86,7 @@ export default function Home() {
           poster
         )}
       </div>
-      {webGL && (
+      {webGL && stage >= 1 && (
         <Suspense fallback={null}>
           <SceneCanvas active={onScreen && visible} reduced={reduced} />
         </Suspense>
@@ -111,7 +114,7 @@ export default function Home() {
             className="relative mt-2 aspect-[53/12] w-full cursor-pointer touch-manipulation select-none rounded-lg"
             {...handlers}
           >
-            {webGL ? (
+            {webGL && stage >= 1 ? (
               <Suspense fallback={nameGrid}>
                 <NameView graph={graph} reduced={reduced} className="absolute inset-0" />
               </Suspense>
