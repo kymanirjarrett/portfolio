@@ -1,4 +1,3 @@
-import Footer from '@/components/Footer'
 import StackTags from '@/components/StackTags'
 import { CaseSection, PageHeader } from '@/components/PageLayout'
 import { projects } from '@/data/projects'
@@ -87,104 +86,90 @@ const decisions = [
 
 export default function VigilCaseStudy() {
   return (
-    <>
-      <main id="main-content">
-        <PageHeader title="Vigil" back={{ label: 'Back to projects', to: '/projects' }}>
-          <p className="col-span-12 font-display text-lead font-medium text-muted">{vigil.kind}</p>
-          <p className="col-span-12 max-w-measure text-lead lg:col-span-8">{vigil.description}</p>
-          <div className="col-span-12 flex flex-wrap gap-3 pt-2">
-            <a
-              href={vigil.liveUrl!}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-quiet"
-            >
-              Visit the live site
-            </a>
-            <a
-              href={vigil.repoUrl!}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-quiet"
-            >
-              View the source
-            </a>
-          </div>
-        </PageHeader>
+    <main id="main-content">
+      <PageHeader title="Vigil" back={{ label: 'Back to projects', to: '/projects' }}>
+        <p className="col-span-12 font-display text-lead font-medium text-muted">{vigil.kind}</p>
+        <p className="col-span-12 max-w-measure text-lead lg:col-span-8">{vigil.description}</p>
+        <div className="col-span-12 flex flex-wrap gap-3 pt-2">
+          <a href={vigil.liveUrl!} target="_blank" rel="noopener noreferrer" className="btn-quiet">
+            Visit the live site
+          </a>
+          <a href={vigil.repoUrl!} target="_blank" rel="noopener noreferrer" className="btn-quiet">
+            View the source
+          </a>
+        </div>
+      </PageHeader>
 
-        <CaseSection title="The problem">
-          <p className="max-w-measure">
-            ETL pipeline failures are silent. A job stalls, data goes stale, and analysts downstream
-            don't know until something breaks visibly, sometimes hours later. Existing tools either
-            require expensive enterprise contracts or don't understand your specific pipeline's
-            normal behavior. Vigil was built to solve exactly this.
+      <CaseSection title="The problem">
+        <p className="max-w-measure">
+          ETL pipeline failures are silent. A job stalls, data goes stale, and analysts downstream
+          don't know until something breaks visibly, sometimes hours later. Existing tools either
+          require expensive enterprise contracts or don't understand your specific pipeline's normal
+          behavior. Vigil was built to solve exactly this.
+        </p>
+      </CaseSection>
+
+      <CaseSection title="The solution">
+        <div className="max-w-measure space-y-4">
+          <p>
+            Vigil integrates with AWS Glue through boto3 to pull real-time and historical job run
+            telemetry. A statistical anomaly detection layer, based on duration z-scores and
+            consecutive failure thresholds, determines whether any given run should trigger an
+            alert.
           </p>
-        </CaseSection>
+          <p>
+            Alerts route through SendGrid with structured context: which pipeline, what the anomaly
+            was, and how it compares to the 7-day and 30-day baselines. A Datadog-inspired dashboard
+            built in React gives engineers a live view of pipeline health across all jobs.
+          </p>
+          <p>
+            Auth is handled with JWT, and data persists in PostgreSQL on Supabase, managed through
+            Alembic migrations. The backend runs on Render; the frontend is deployed on Vercel.
+          </p>
+        </div>
+      </CaseSection>
 
-        <CaseSection title="The solution">
-          <div className="max-w-measure space-y-4">
-            <p>
-              Vigil integrates with AWS Glue through boto3 to pull real-time and historical job run
-              telemetry. A statistical anomaly detection layer, based on duration z-scores and
-              consecutive failure thresholds, determines whether any given run should trigger an
-              alert.
-            </p>
-            <p>
-              Alerts route through SendGrid with structured context: which pipeline, what the
-              anomaly was, and how it compares to the 7-day and 30-day baselines. A Datadog-inspired
-              dashboard built in React gives engineers a live view of pipeline health across all
-              jobs.
-            </p>
-            <p>
-              Auth is handled with JWT, and data persists in PostgreSQL on Supabase, managed through
-              Alembic migrations. The backend runs on Render; the frontend is deployed on Vercel.
-            </p>
-          </div>
-        </CaseSection>
+      <CaseSection title="Security">
+        <dl className="space-y-6">
+          {security.map(({ title, body }) => (
+            <div key={title} className="max-w-measure">
+              <dt className="font-display font-semibold">{title}</dt>
+              <dd className="mt-1 text-muted">{body}</dd>
+            </div>
+          ))}
+        </dl>
+      </CaseSection>
 
-        <CaseSection title="Security">
-          <dl className="space-y-6">
-            {security.map(({ title, body }) => (
-              <div key={title} className="max-w-measure">
-                <dt className="font-display font-semibold">{title}</dt>
-                <dd className="mt-1 text-muted">{body}</dd>
-              </div>
-            ))}
-          </dl>
-        </CaseSection>
+      <CaseSection title="Architecture">
+        <div className="grid gap-8 sm:grid-cols-3">
+          {architecture.map(({ layer, items }) => (
+            <div key={layer}>
+              <h3 className="font-display font-semibold">{layer}</h3>
+              <ul className="mt-3 space-y-2 text-muted">
+                {items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </CaseSection>
 
-        <CaseSection title="Architecture">
-          <div className="grid gap-8 sm:grid-cols-3">
-            {architecture.map(({ layer, items }) => (
-              <div key={layer}>
-                <h3 className="font-display font-semibold">{layer}</h3>
-                <ul className="mt-3 space-y-2 text-muted">
-                  {items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </CaseSection>
+      <CaseSection title="Key decisions">
+        <dl className="grid gap-x-10 gap-y-8 md:grid-cols-2">
+          {decisions.map(({ title, body }) => (
+            <div key={title}>
+              <dt className="font-display font-semibold">{title}</dt>
+              <dd className="mt-1 text-muted">{body}</dd>
+            </div>
+          ))}
+        </dl>
+      </CaseSection>
 
-        <CaseSection title="Key decisions">
-          <dl className="grid gap-x-10 gap-y-8 md:grid-cols-2">
-            {decisions.map(({ title, body }) => (
-              <div key={title}>
-                <dt className="font-display font-semibold">{title}</dt>
-                <dd className="mt-1 text-muted">{body}</dd>
-              </div>
-            ))}
-          </dl>
-        </CaseSection>
-
-        <CaseSection title="Stack">
-          <StackTags items={vigil.stack} label="Vigil stack" />
-        </CaseSection>
-        <div className="pb-section" />
-      </main>
-      <Footer />
-    </>
+      <CaseSection title="Stack">
+        <StackTags items={vigil.stack} label="Vigil stack" />
+      </CaseSection>
+      <div className="pb-section" />
+    </main>
   )
 }

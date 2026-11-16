@@ -8,7 +8,6 @@ import Experience from '@/sections/Experience'
 import Leadership from '@/sections/Leadership'
 import Skills from '@/sections/Skills'
 import Contact from '@/sections/Contact'
-import Footer from '@/components/Footer'
 import { useScrollToId } from '@/hooks/useScrollToId'
 
 export default function Home() {
@@ -29,18 +28,15 @@ export default function Home() {
   }, [location.state, scrollToId])
 
   return (
-    <>
-      <main id="main-content">
-        <Hero />
-        <Spotlight />
-        <About />
-        <Work />
-        <Experience />
-        <Leadership />
-        <Skills />
-        <Contact />
-      </main>
-      <Footer />
-    </>
+    <main id="main-content">
+      <Hero />
+      <Spotlight />
+      <About />
+      <Work />
+      <Experience />
+      <Leadership />
+      <Skills />
+      <Contact />
+    </main>
   )
 }
