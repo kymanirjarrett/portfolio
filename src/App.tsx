@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { ReactLenis, useLenis } from 'lenis/react'
 import Home from './pages/Home'
 import Nav from './components/Nav'
-import { ResumeModalProvider } from './contexts/ResumeModalContext'
 
 const VigilCaseStudy = lazy(() => import('./pages/VigilCaseStudy'))
 const ClausifyCaseStudy = lazy(() => import('./pages/ClausifyCaseStudy'))
@@ -32,7 +31,7 @@ export default function App() {
     // prefers-reduced-motion (respectReducedMotion defaults to true).
     <ReactLenis root options={{ autoRaf: true }}>
       <BrowserRouter>
-        <ResumeModalProvider>
+        <>
           <a
             href="#main-content"
             className="sr-only z-50 rounded-full bg-ink px-5 py-2.5 font-display font-semibold text-canvas focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
@@ -51,7 +50,7 @@ export default function App() {
               <Route path="/projects/clausify" element={<ClausifyCaseStudy />} />
             </Routes>
           </Suspense>
-        </ResumeModalProvider>
+        </>
       </BrowserRouter>
     </ReactLenis>
   )

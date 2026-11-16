@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
-import { useResumeModal } from '@/contexts/ResumeModalContext'
 import { useScrollToId } from '@/hooks/useScrollToId'
 import { cn } from '@/lib/utils'
 
@@ -21,7 +20,6 @@ export default function Nav() {
   const location = useLocation()
   const navigate = useNavigate()
   const scrollToId = useScrollToId()
-  const { openModal } = useResumeModal()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -85,9 +83,6 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <button type="button" onClick={openModal} className="btn-quiet py-2">
-            View resume
-          </button>
         </div>
 
         <button
@@ -118,16 +113,6 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <button
-            type="button"
-            onClick={() => {
-              setMenuOpen(false)
-              openModal()
-            }}
-            className="btn-quiet"
-          >
-            View resume
-          </button>
         </div>
       )}
     </header>

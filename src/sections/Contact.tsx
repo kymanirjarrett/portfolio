@@ -45,15 +45,6 @@ export default function Contact() {
             LinkedIn
           </a>
         </li>
-        <li>
-          <a
-            href="/resume.pdf"
-            download="Kymani_Jarrett_Resume.pdf"
-            className="inline-flex rounded-full border border-ink/30 px-5 py-2.5 font-display font-semibold text-ink transition-colors hover:border-ink/60 hover:bg-canvas/10"
-          >
-            Download resume
-          </a>
-        </li>
       </ul>
     </section>
   )

@@ -7,7 +7,6 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useInViewport } from '@/hooks/useInViewport'
 import { usePageVisible } from '@/hooks/usePageVisible'
 import { useScrollToId } from '@/hooks/useScrollToId'
-import { useResumeModal } from '@/contexts/ResumeModalContext'
 
 const TechSphere = lazy(() => import('@/components/TechSphere'))
 
@@ -20,7 +19,6 @@ export default function Hero() {
   const visible = usePageVisible()
   const onScreen = useInViewport(sectionRef)
   const scrollToId = useScrollToId()
-  const { openModal } = useResumeModal()
   const active = onScreen && visible
 
   // One load sequence on a shared clock: text enters, then the sphere scales in.
@@ -82,9 +80,6 @@ export default function Hero() {
             >
               See my work
             </a>
-            <button type="button" onClick={openModal} className="btn-quiet">
-              View resume
-            </button>
             <a
               href="https://github.com/kymanirjarrett"
               target="_blank"
