@@ -1,10 +1,28 @@
-import type { ReactNode } from 'react'
+import { lazy, Suspense, useRef, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import NameGrid2D from '@/components/home/NameGrid2D'
 import { SocialLinks } from '@/components/SocialIcons'
+import { useInViewport } from '@/hooks/useInViewport'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useNameToggle } from '@/hooks/useNameToggle'
+import { usePageVisible } from '@/hooks/usePageVisible'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useWebGL } from '@/hooks/useWebGL'
 import { EMAIL } from '@/lib/contact'
+
+// One lazy chunk holds three.js, the canvas, and both scenes. Each export is
+// wrapped separately so it can sit in its own place in the layout.
+const loadScene = () => import('@/components/home/HomeScene')
+const SceneCanvas = lazy(() => loadScene().then((m) => ({ default: m.SceneCanvas })))
+const NameView = lazy(() => loadScene().then((m) => ({ default: m.NameView })))
+const PalmView = lazy(() => loadScene().then((m) => ({ default: m.PalmView })))
+
+/** The palm's resting pose as an image: used on small screens and without WebGL. */
+function PalmPoster({ className }: { className?: string }) {
+  return (
+    <img src="/palm-poster.webp" alt="" aria-hidden="true" decoding="async" className={className} />
+  )
+}
 
 const linkClass =
   'font-medium text-ink underline decoration-accent/50 decoration-2 underline-offset-[0.2em] transition-colors hover:text-accent hover:decoration-accent'
@@ -26,14 +44,51 @@ function Internal({ to, children }: { to: string; children: ReactNode }) {
 }
 
 export default function Home() {
+  const mainRef = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
+  const webGL = useWebGL()
+  const wide = useMediaQuery('(min-width: 768px)')
+  const onScreen = useInViewport(mainRef)
+  const visible = usePageVisible()
   const { graph, handlers } = useNameToggle()
+
+  const nameGrid = (
+    <NameGrid2D
+      graph={graph}
+      reduced={reduced}
+      className="absolute inset-x-0 top-1/2 -translate-y-1/2"
+    />
+  )
+  const poster = wide ? (
+    <PalmPoster className="pointer-events-none absolute bottom-0 right-0 h-[92%] w-auto max-w-none" />
+  ) : (
+    // Small screens: smaller, behind the text at the top right, faded enough
+    // that text over it keeps AA contrast.
+    <PalmPoster className="pointer-events-none absolute -right-[18vw] top-10 h-[58svh] w-auto max-w-none opacity-[0.22]" />
+  )
 
   return (
     <main
+      ref={mainRef}
       id="main-content"
       className="relative isolate min-h-[100svh] overflow-hidden bg-gradient-to-b from-sky to-canvas"
     >
+      {/* Scenery sits behind the text (z-0); the canvas covers the whole hero. */}
+      <div aria-hidden="true" className="absolute inset-0 z-0">
+        {webGL && wide ? (
+          <Suspense fallback={poster}>
+            <PalmView reduced={reduced} className="absolute bottom-0 right-0 h-[94%] w-[44vw]" />
+          </Suspense>
+        ) : (
+          poster
+        )}
+      </div>
+      {webGL && (
+        <Suspense fallback={null}>
+          <SceneCanvas active={onScreen && visible} reduced={reduced} />
+        </Suspense>
+      )}
+
       <section
         aria-labelledby="home-heading"
         className="page-grid relative z-10 min-h-[100svh] content-center pb-10 pt-24"
@@ -56,11 +111,13 @@ export default function Home() {
             className="relative mt-2 aspect-[53/12] w-full cursor-pointer touch-manipulation select-none rounded-lg"
             {...handlers}
           >
-            <NameGrid2D
-              graph={graph}
-              reduced={reduced}
-              className="absolute inset-x-0 top-1/2 -translate-y-1/2"
-            />
+            {webGL ? (
+              <Suspense fallback={nameGrid}>
+                <NameView graph={graph} reduced={reduced} className="absolute inset-0" />
+              </Suspense>
+            ) : (
+              nameGrid
+            )}
           </div>
 
           <div className="mt-6 max-w-[56ch] space-y-3 text-lead">
