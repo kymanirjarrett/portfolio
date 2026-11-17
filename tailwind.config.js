@@ -47,6 +47,10 @@ export default {
         gutter: 'var(--gutter)',
         section: 'clamp(4rem, 3rem + 4vw, 8rem)',
       },
+      // Shoreline foam drifts by half its (doubled) width, then loops seamlessly.
+      keyframes: {
+        wave: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+      },
       transitionTimingFunction: {
         'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
       },

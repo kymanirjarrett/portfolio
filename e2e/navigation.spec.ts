@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 const navRoutes = [
   { label: 'Projects', path: '/projects', heading: "Things I've built" },
-  { label: 'Experience', path: '/experience', heading: "Where I've worked" },
+  { label: 'Experience', path: '/experience', heading: 'Experience' },
   { label: 'Leadership', path: '/leadership', heading: 'Outside of code' },
 ]
 
