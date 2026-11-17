@@ -51,3 +51,15 @@ test('command menu navigates by keyboard', async ({ page }) => {
   await expect(dialog).toBeHidden()
   await expect(page).toHaveURL(/\/experience$/)
 })
+
+test('nav holds the contact icons, and the homepage does not repeat them', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' })
+  const nav = page.getByRole('navigation', { name: 'Main' })
+  await expect(nav.getByRole('link', { name: 'Email' })).toHaveAttribute(
+    'href',
+    'mailto:jarretkr@mail.uc.edu'
+  )
+  await expect(nav.getByRole('link', { name: 'GitHub' })).toBeVisible()
+  await expect(nav.getByRole('link', { name: 'LinkedIn' })).toBeVisible()
+  await expect(page.getByRole('main').getByRole('link', { name: 'GitHub' })).toHaveCount(0)
+})

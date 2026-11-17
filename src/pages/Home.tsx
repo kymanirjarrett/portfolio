@@ -1,7 +1,6 @@
 import { lazy, Suspense, useRef, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import NameGrid2D from '@/components/home/NameGrid2D'
-import { SocialLinks } from '@/components/SocialIcons'
 import { useIdleStage } from '@/hooks/useIdleStage'
 import { useInViewport } from '@/hooks/useInViewport'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
@@ -9,7 +8,6 @@ import { useNameToggle } from '@/hooks/useNameToggle'
 import { usePageVisible } from '@/hooks/usePageVisible'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useWebGL } from '@/hooks/useWebGL'
-import { EMAIL } from '@/lib/contact'
 
 // One lazy chunk holds three.js, the canvas, and both scenes. Each export is
 // wrapped separately so it can sit in its own place in the layout.
@@ -74,7 +72,7 @@ export default function Home() {
     <main
       ref={mainRef}
       id="main-content"
-      className="relative isolate min-h-[100svh] overflow-hidden bg-gradient-to-b from-sky to-canvas"
+      className="relative isolate min-h-[100svh] overflow-hidden bg-gradient-to-b from-sky-deep from-0% via-sky via-40% to-canvas to-90%"
     >
       {/* Scenery sits behind the text (z-0); the canvas covers the whole hero. */}
       <div aria-hidden="true" className="absolute inset-0 z-0">
@@ -125,11 +123,11 @@ export default function Home() {
 
           <div className="mt-6 max-w-[56ch] space-y-3 text-lead">
             <p>
-              Software engineer studying IT and Cybersecurity at the{' '}
-              <External href="https://www.uc.edu">University of Cincinnati</External>.
+              Your friendly neighborhood Jamaican software engineer studying IT and Cybersecurity at
+              the <External href="https://www.uc.edu">University of Cincinnati</External>.
             </p>
             <p>
-              Most recently a Software Engineer Intern at{' '}
+              A previous Software Engineer Intern at{' '}
               <External href="https://www.jmsmucker.com">The J.M. Smucker Co.</External>, where I
               shipped keyless CI/CD and data pipelines on AWS.
             </p>
@@ -145,13 +143,6 @@ export default function Home() {
               <Internal to="/projects/clausify">Clausify</Internal>, and leading corporate outreach
               for <External href="https://www.colorstack.org">ColorStack</External> at UC.
             </p>
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-            <a href={`mailto:${EMAIL}`} className={`${linkClass} font-display text-lead`}>
-              {EMAIL}
-            </a>
-            <SocialLinks className="-ml-1" />
           </div>
         </div>
       </section>

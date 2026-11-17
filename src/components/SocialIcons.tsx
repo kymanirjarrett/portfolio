@@ -1,5 +1,6 @@
+import { Mail } from 'lucide-react'
 import { siGithub } from 'simple-icons'
-import { GITHUB_URL, LINKEDIN_URL } from '@/lib/contact'
+import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '@/lib/contact'
 import { cn } from '@/lib/utils'
 
 interface IconProps {
@@ -49,7 +50,10 @@ interface SocialLinksProps {
   size?: number
 }
 
-/** GitHub and LinkedIn as icon links. Each has an accessible name and opens in a new tab. */
+/**
+ * Email, GitHub, and LinkedIn as icon links, each with an accessible name.
+ * Email opens the mail app; the profiles open in a new tab.
+ */
 export function SocialLinks({ className, linkClassName, size = 20 }: SocialLinksProps) {
   const link = cn(
     'inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 hover:text-accent',
@@ -57,6 +61,11 @@ export function SocialLinks({ className, linkClassName, size = 20 }: SocialLinks
   )
   return (
     <ul className={cn('flex items-center gap-1', className)}>
+      <li>
+        <a href={`mailto:${EMAIL}`} aria-label="Email" title={EMAIL} className={link}>
+          <Mail size={size} strokeWidth={2} aria-hidden="true" />
+        </a>
+      </li>
       <li>
         <a
           href={GITHUB_URL}
