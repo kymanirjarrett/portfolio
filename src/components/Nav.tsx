@@ -9,9 +9,8 @@ import { isApplePlatform } from '@/lib/platform'
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { label: 'About', href: '/about' },
-  { label: 'Projects', href: '/projects' },
   { label: 'Experience', href: '/experience' },
+  { label: 'Projects', href: '/projects' },
   { label: 'Leadership', href: '/leadership' },
 ]
 

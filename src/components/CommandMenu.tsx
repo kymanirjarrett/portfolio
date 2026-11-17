@@ -8,9 +8,8 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '@/lib/contact'
 
 const PAGES = [
   { label: 'Home', to: '/' },
-  { label: 'About', to: '/about' },
-  { label: 'Projects', to: '/projects' },
   { label: 'Experience', to: '/experience' },
+  { label: 'Projects', to: '/projects' },
   { label: 'Leadership', to: '/leadership' },
 ]
 

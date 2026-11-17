@@ -98,7 +98,6 @@ vercel.json               # SPA rewrites and security headers
 | Route                | Description                                |
 | -------------------- | ------------------------------------------ |
 | `/`                  | Greeting, 3D name, intro, and contact line |
-| `/about`             | About me, headshot, and education          |
 | `/experience`        | Full experience timeline                   |
 | `/leadership`        | All leadership roles                       |
 | `/projects`          | All projects                               |
@@ -124,7 +123,7 @@ All content lives in typed modules under `src/data/`.
 
 ## CI
 
-Every push to `main` or `feat/**` and every pull request runs lint, typecheck, unit tests, and a production build on Node 24. A second job builds the site, captures full-page Playwright screenshots (`/` and `/about` at 1280, 1728, and 375px; the case studies at 1280, 1728, and 2560px), checks for horizontal overflow, runs navigation and command menu checks, and uploads the screenshots as an artifact.
+Every push to `main` or `feat/**` and every pull request runs lint, typecheck, unit tests, and a production build on Node 24. A second job builds the site, captures full-page Playwright screenshots (`/` and `/experience` at 1280, 1728, and 375px; the case studies at 1280, 1728, and 2560px), checks for horizontal overflow, runs navigation and command menu checks, and uploads the screenshots as an artifact.
 
 ---
 

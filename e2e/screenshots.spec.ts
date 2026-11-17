@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 // Captures for reviewers to compare layouts across pull requests (uploaded by CI).
 const routes = [
   { name: 'home', path: '/', widths: [1280, 1728, 375] },
-  { name: 'about', path: '/about', widths: [1280, 1728, 375] },
+  { name: 'experience', path: '/experience', widths: [1280, 1728, 375] },
   { name: 'vigil', path: '/projects/vigil', widths: [1280, 1728, 2560] },
   { name: 'clausify', path: '/projects/clausify', widths: [1280, 1728, 2560] },
 ]
