@@ -10,7 +10,6 @@ const ClausifyCaseStudy = lazy(() => import('./pages/ClausifyCaseStudy'))
 const ExperiencePage = lazy(() => import('./pages/ExperiencePage'))
 const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
-const AboutPage = lazy(() => import('./pages/AboutPage'))
 
 function PageLoader() {
   return <div className="min-h-screen bg-canvas" aria-busy="true" />
@@ -45,7 +44,6 @@ export default function App() {
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/about" element={<AboutPage />} />
               <Route path="/experience" element={<ExperiencePage />} />
               <Route path="/leadership" element={<LeadershipPage />} />
               <Route path="/projects" element={<ProjectsPage />} />

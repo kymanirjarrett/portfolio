@@ -50,6 +50,7 @@ npm run test:e2e   # Playwright snapshots of key routes (build first)
 - **Palette, light only ("warm daylight").** Sand canvas `#F6F1E7`, a sky `#EAF6F8` at the top of the hero gradient, ink `#1F2A24` text (13.18:1), muted `#5C6B63` (4.99:1), and a deep palm green accent `#0E6B4F` (5.77:1) for links and focus rings. Contribution levels `#E8E3D6` to `#0E6B4F` sit between GitHub's greens and palm and sea greens, so the name graph reads as GitHub and as part of the scene.
 - **Type.** Space Grotesk for everything; JetBrains Mono only for tiny labels and the ⌘K hint.
 - **A homepage that does very little.** "Hey, I'm" plus KYMANI in 3D contribution-graph blocks (a 53 × 7 grid, the size of a GitHub graph), four lines of intro, and a contact line. Hover, keyboard focus, or a tap turns the name into a decorative, seeded contribution graph that rises like GitHub Skyline, then settles back. A procedural clay palm sways and leans slightly toward the cursor as scenery. The `<h1>` still reads "Hey, I'm Kymani Jarrett" for screen readers and search engines.
+- **Experience: one day at the beach.** Each page gets one eye-catching feature. On `/experience` a beach scene is pinned behind the content and scrolling moves time through a day: the tech sphere is the sun, rising out of the sea at the top of the page (education), arcing across the sky through each role in story order, and setting at the end. As each role crosses the middle of the screen the sun turns to bring that role's tools to the front. Sky, sea, and sand are gradients and SVG; the sun is a small WebGL scene whose logos are textured discs, so the sun's body hides the ones behind it. Phones get a still band at the top; reduced motion holds the sun at midday.
 - **⌘K command menu.** Built on `cmdk` (Radix dialog underneath): focus trap, Escape to close, focus returns to where it was. Loaded on first open.
 - **Reduced motion is a first-class mode.** `useReducedMotion` is the single source of truth. Under `prefers-reduced-motion` the palm stands still, the name swaps instantly with no rising blocks, and Lenis turns itself off.
 
@@ -61,7 +62,9 @@ npm run test:e2e   # Playwright snapshots of key routes (build first)
 - The name and the palm share a single WebGL canvas through drei's `View`. The name is one `InstancedMesh` of 371 blocks: one draw call.
 - Without WebGL the name falls back to the same grid as HTML squares, and the palm to `public/palm-poster.webp` (regenerate with `npm run palm-poster` against a running preview). Small screens always use the poster.
 - Initial JavaScript is ~73 KB gzipped (was ~124 KB before the homepage redesign).
-- Lighthouse (desktop, home): 99 performance, 100 accessibility.
+- The experience page's 3D sun loads about two seconds in, during idle time; a flat CSS sun stands in until then.
+- The main Space Grotesk file is preloaded from `index.html`, so first paint already uses it and text never re-wraps.
+- Lighthouse (desktop): home and experience both 100 performance, 100 accessibility.
 
 ---
 
@@ -95,15 +98,14 @@ vercel.json               # SPA rewrites and security headers
 
 ## Routes
 
-| Route                | Description                                |
-| -------------------- | ------------------------------------------ |
-| `/`                  | Greeting, 3D name, intro, and contact line |
-| `/about`             | About me, headshot, and education          |
-| `/experience`        | Full experience timeline                   |
-| `/leadership`        | All leadership roles                       |
-| `/projects`          | All projects                               |
-| `/projects/vigil`    | Vigil case study                           |
-| `/projects/clausify` | Clausify case study                        |
+| Route                | Description                                        |
+| -------------------- | -------------------------------------------------- |
+| `/`                  | Greeting, 3D name, intro, and contact line         |
+| `/experience`        | Education and roles in a scroll-driven beach scene |
+| `/leadership`        | All leadership roles                               |
+| `/projects`          | All projects                                       |
+| `/projects/vigil`    | Vigil case study                                   |
+| `/projects/clausify` | Clausify case study                                |
 
 ---
 
@@ -114,17 +116,18 @@ All content lives in typed modules under `src/data/`.
 | File                  | Controls                                                                          |
 | --------------------- | --------------------------------------------------------------------------------- |
 | `data/projects.ts`    | Projects: description, stack, case study, live and repo links, development status |
-| `data/experience.ts`  | Roles: title, company, period, bullets, stack                                     |
+| `data/experience.ts`  | Roles: title, company, period, bullets, stack, and the sun logos to highlight     |
+| `data/education.ts`   | Degrees, track, graduation, GPA, Dean's List semesters                            |
 | `data/leadership.ts`  | Leadership roles                                                                  |
 | `data/skills.ts`      | Skill categories                                                                  |
-| `data/sphereLogos.ts` | Logos on the 3D sphere (parked)                                                   |
+| `data/sphereLogos.ts` | Logos on the experience page's sun                                                |
 | `data/spotlight.ts`   | Highlights strip tiles                                                            |
 
 ---
 
 ## CI
 
-Every push to `main` or `feat/**` and every pull request runs lint, typecheck, unit tests, and a production build on Node 24. A second job builds the site, captures full-page Playwright screenshots (`/` and `/about` at 1280, 1728, and 375px; the case studies at 1280, 1728, and 2560px), checks for horizontal overflow, runs navigation and command menu checks, and uploads the screenshots as an artifact.
+Every push to `main` or `feat/**` and every pull request runs lint, typecheck, unit tests, and a production build on Node 24. A second job builds the site, captures full-page Playwright screenshots (`/` and `/experience` at 1280, 1728, and 375px; the case studies at 1280, 1728, and 2560px), checks for horizontal overflow, runs navigation and command menu checks, and uploads the screenshots as an artifact.
 
 ---
 

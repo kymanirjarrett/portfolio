@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test'
 
 const navRoutes = [
-  { label: 'About', path: '/about', heading: 'About me' },
   { label: 'Projects', path: '/projects', heading: "Things I've built" },
-  { label: 'Experience', path: '/experience', heading: "Where I've worked" },
+  { label: 'Experience', path: '/experience', heading: 'Experience' },
   { label: 'Leadership', path: '/leadership', heading: 'Outside of code' },
 ]
 
@@ -30,8 +29,18 @@ test('logo links home', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText("Hey, I'm Kymani Jarrett")
 })
 
+test('nav lists Experience, Projects, Leadership in order', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' })
+  const pageLinks = page
+    .getByRole('navigation', { name: 'Main' })
+    .locator('ul')
+    .first()
+    .getByRole('link')
+  await expect(pageLinks).toHaveText(['Experience', 'Projects', 'Leadership'])
+})
+
 test('has no resume and no contact nav link', async ({ page }) => {
-  for (const path of ['/', '/about', '/projects']) {
+  for (const path of ['/', '/experience', '/projects']) {
     await page.goto(path, { waitUntil: 'networkidle' })
     await expect(page.getByText(/view resume/i)).toHaveCount(0)
     const nav = page.getByRole('navigation', { name: 'Main' })

@@ -5,6 +5,8 @@ export interface ExperienceItem {
   period: string
   bullets: string[]
   stack: string[]
+  /** Logos on the experience page's sun to bring forward for this role (names from sphereLogos). */
+  sunLogos: string[]
 }
 
 export const experience: ExperienceItem[] = [
@@ -31,6 +33,7 @@ export const experience: ExperienceItem[] = [
       'Step Functions',
       'Python',
     ],
+    sunLogos: ['AWS', 'GitHub Actions', 'Python', 'GitHub'],
   },
   {
     id: 'itsc',
@@ -54,6 +57,7 @@ export const experience: ExperienceItem[] = [
       'Liquibase',
       'Inversify',
     ],
+    sunLogos: ['React', 'TypeScript', 'Node.js', 'Express', 'PostgreSQL'],
   },
   {
     id: 'toyz',
@@ -66,5 +70,6 @@ export const experience: ExperienceItem[] = [
       "Turned the CEO's feature concepts into shipped UI in weekly sprints with the CTO, PM, and four partner universities, including integration testing against the Unreal Engine game.",
     ],
     stack: ['React', 'JavaScript', 'REST APIs'],
+    sunLogos: ['React', 'JavaScript'],
   },
 ]
