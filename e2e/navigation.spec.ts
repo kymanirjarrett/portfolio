@@ -1,36 +1,65 @@
 import { test, expect } from '@playwright/test'
 
-// Lenis only smooths scrolling when motion is allowed, and the bug this guards
-// against (a stale scroll limit after a route change) only shows up then.
-test.use({ reducedMotion: 'no-preference' })
+const navRoutes = [
+  { label: 'About', path: '/about', heading: 'About me' },
+  { label: 'Projects', path: '/projects', heading: "Things I've built" },
+  { label: 'Experience', path: '/experience', heading: "Where I've worked" },
+  { label: 'Leadership', path: '/leadership', heading: 'Outside of code' },
+]
 
-for (const start of ['/', '/projects', '/projects/vigil']) {
-  test(`Contact link from ${start} reaches the contact section`, async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 })
-    await page.goto(start, { waitUntil: 'networkidle' })
+test.beforeEach(async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+})
+
+for (const route of navRoutes) {
+  test(`${route.label} nav link resolves`, async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' })
     await page
       .getByRole('navigation', { name: 'Main' })
-      .getByRole('link', { name: 'Contact' })
+      .getByRole('link', { name: route.label })
       .click()
-
-    await expect(page).toHaveURL(/\/$/)
-    // The section is near the bottom, so it may end below the nav rather than at
-    // the top: require it to be on screen and the page scrolled to its end.
-    await expect
-      .poll(
-        () =>
-          page.evaluate(() => {
-            // The URL changes before React renders the home page, so the section
-            // can briefly be missing: report "not yet" instead of throwing.
-            const contact = document.getElementById('contact')
-            if (!contact) return false
-            const rect = contact.getBoundingClientRect()
-            const atBottom =
-              Math.abs(window.scrollY - (document.documentElement.scrollHeight - innerHeight)) < 2
-            return rect.top < innerHeight / 2 && (rect.top <= 80 || atBottom)
-          }),
-        { timeout: 5000 }
-      )
-      .toBe(true)
+    await expect(page).toHaveURL(new RegExp(`${route.path}$`))
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(route.heading)
   })
 }
+
+test('logo links home', async ({ page }) => {
+  await page.goto('/projects', { waitUntil: 'networkidle' })
+  await page.getByRole('link', { name: 'Kymani Jarrett, home' }).click()
+  await expect(page).toHaveURL(/\/$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText("Hey, I'm Kymani Jarrett")
+})
+
+test('has no resume and no contact nav link', async ({ page }) => {
+  for (const path of ['/', '/about', '/projects']) {
+    await page.goto(path, { waitUntil: 'networkidle' })
+    await expect(page.getByText(/view resume/i)).toHaveCount(0)
+    const nav = page.getByRole('navigation', { name: 'Main' })
+    await expect(nav.getByRole('link', { name: 'Contact' })).toHaveCount(0)
+  }
+  const resume = await page.request.get('/resume.pdf')
+  expect(resume.headers()['content-type'] ?? '').not.toContain('pdf')
+})
+
+test('command menu navigates by keyboard', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' })
+  await page.keyboard.press('ControlOrMeta+k')
+  const dialog = page.getByRole('dialog', { name: 'Command menu' })
+  await expect(dialog).toBeVisible()
+  await page.keyboard.type('experience')
+  await page.keyboard.press('Enter')
+  await expect(dialog).toBeHidden()
+  await expect(page).toHaveURL(/\/experience$/)
+})
+
+test('nav holds the contact icons, and the homepage does not repeat them', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' })
+  const nav = page.getByRole('navigation', { name: 'Main' })
+  await expect(nav.getByRole('link', { name: 'Email' })).toHaveAttribute(
+    'href',
+    'mailto:jarretkr@mail.uc.edu'
+  )
+  await expect(nav.getByRole('link', { name: 'GitHub' })).toBeVisible()
+  await expect(nav.getByRole('link', { name: 'LinkedIn' })).toBeVisible()
+  await expect(page.getByRole('main').getByRole('link', { name: 'GitHub' })).toHaveCount(0)
+})

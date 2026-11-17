@@ -44,6 +44,15 @@ class MockIntersectionObserver implements IntersectionObserver {
 
 globalThis.IntersectionObserver = MockIntersectionObserver
 
+// jsdom also lacks ResizeObserver and scrollIntoView, which cmdk uses to size its
+// list and keep the selected item visible. No-op stand-ins are enough for tests.
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Element.prototype.scrollIntoView ??= function scrollIntoView() {}
+
 export function setAllIntersecting(isIntersecting: boolean) {
   MockIntersectionObserver.instances.forEach((o) => o.trigger(isIntersecting))
 }

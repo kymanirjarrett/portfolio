@@ -15,7 +15,7 @@ Personal site for Kymani Jarrett, a software engineer studying IT and Cybersecur
 | Styling   | Tailwind CSS with design tokens, self-hosted variable fonts        |
 | Routing   | React Router v7                                                    |
 | Motion    | Motion (scroll-linked), Lenis (smooth scroll)                      |
-| 3D        | react-three-fiber, drei, ShaderGradient                            |
+| 3D        | react-three-fiber, drei (one shared canvas via `View`)             |
 | Icons     | simple-icons and Devicon paths bundled at build time, lucide-react |
 | Tests     | Vitest + React Testing Library, Playwright visual snapshots        |
 | CI        | GitHub Actions                                                     |
@@ -47,19 +47,21 @@ npm run test:e2e   # Playwright snapshots of key routes (build first)
 ## Design decisions
 
 - **Full-width layout.** Every section sits on a 12-column grid between fluid gutters (`clamp(1.25rem, 4vw, 4rem)`) with no max-width cap. The only width limit is the ~68ch prose measure, so large monitors get larger type instead of empty margins.
-- **Palette, dark only.** A navy canvas `#0D0D24` with `#141432` for raised surfaces, paper-white `#F7F7FC` text, and cobalt `#2F54EB` as the signature color for fills and lines. Cobalt is 3.26:1 on the canvas, enough for UI but not for text, so links use a lighter cobalt `#7F96FF` (7.01:1). Violet `#7B4DFF` partners cobalt in the gradient, and ember `#FF7F11` is reserved for the primary action and the "in active development" marker, always as a fill with ink text. One theme instead of two keeps every color decision checked once.
-- **Type.** Mona Sans (variable width and weight) for headings, set wide and heavy; Atkinson Hyperlegible Next for body text.
-- **Motion responds to the reader.** Section motion is scrubbed by scroll position with Motion's `useScroll`: project rows slide in from alternating sides, the experience timeline draws down the page, skill groups assemble, and the Spotlight strip moves sideways as you scroll down. The strip starts drifting before the section pins and eases in and out, so vertical scrolling hands off to horizontal instead of stopping dead at the lock point. The only autonomous motion is the hero load sequence, the sphere's idle rotation, the gradient's drift, the rotating descriptor, and the Spotlight highlight, which only advances while the section is on screen.
-- **Reduced motion is a first-class mode.** `useReducedMotion` is the single source of truth. Under `prefers-reduced-motion` everything renders in its final position, Lenis turns itself off, the sphere becomes a logo grid, and the gradient becomes a static image.
+- **Palette, light only ("warm daylight").** Sand canvas `#F6F1E7`, a sky `#EAF6F8` at the top of the hero gradient, ink `#1F2A24` text (13.18:1), muted `#5C6B63` (4.99:1), and a deep palm green accent `#0E6B4F` (5.77:1) for links and focus rings. Contribution levels `#E8E3D6` to `#0E6B4F` sit between GitHub's greens and palm and sea greens, so the name graph reads as GitHub and as part of the scene.
+- **Type.** Space Grotesk for everything; JetBrains Mono only for tiny labels and the ⌘K hint.
+- **A homepage that does very little.** "Hey, I'm" plus KYMANI in 3D contribution-graph blocks (a 53 × 7 grid, the size of a GitHub graph), four lines of intro, and a contact line. Hover, keyboard focus, or a tap turns the name into a decorative, seeded contribution graph that rises like GitHub Skyline, then settles back. A procedural clay palm sways and leans slightly toward the cursor as scenery. The `<h1>` still reads "Hey, I'm Kymani Jarrett" for screen readers and search engines.
+- **⌘K command menu.** Built on `cmdk` (Radix dialog underneath): focus trap, Escape to close, focus returns to where it was. Loaded on first open.
+- **Reduced motion is a first-class mode.** `useReducedMotion` is the single source of truth. Under `prefers-reduced-motion` the palm stands still, the name swaps instantly with no rising blocks, and Lenis turns itself off.
 
 ---
 
 ## Performance
 
-- three.js, the sphere, and ShaderGradient load lazily. Both WebGL scenes stop rendering when the hero is off screen or the tab is hidden.
-- The static gradient (12 KB WebP) stands in on mobile, under reduced motion, and without WebGL, and fills the hero while the live gradient loads.
-- Initial JavaScript is ~124 KB gzipped. An earlier `manualChunks` entry for three.js made Vite preload it on every page, so it was removed.
-- Lighthouse (desktop): home 99 performance / 100 accessibility; case studies 100 / 100.
+- three.js and both 3D scenes live in one lazy chunk. They mount in idle stages after first paint (canvas and name, then palm), so no single long task blocks input. Rendering stops when the hero is off screen or the tab is hidden, and the device pixel ratio is capped at 1.75.
+- The name and the palm share a single WebGL canvas through drei's `View`. The name is one `InstancedMesh` of 371 blocks: one draw call.
+- Without WebGL the name falls back to the same grid as HTML squares, and the palm to `public/palm-poster.webp` (regenerate with `npm run palm-poster` against a running preview). Small screens always use the poster.
+- Initial JavaScript is ~73 KB gzipped (was ~124 KB before the homepage redesign).
+- Lighthouse (desktop, home): 99 performance, 100 accessibility.
 
 ---
 
@@ -67,19 +69,21 @@ npm run test:e2e   # Playwright snapshots of key routes (build first)
 
 ```text
 src/
-  components/   # Nav, Footer, TechSphere, HeroAtmosphere, ShaderGradientScene,
-                # ProjectList, ExperienceTimeline, LeadershipList, ResumeModal, ...
-  contexts/     # ResumeModalContext: shared modal state
-  sections/     # Home page sections, in page order
+  components/   # Nav, CommandMenu, PixelMark, SocialIcons, ProjectList, ...
+    home/       # HomeScene (shared canvas), NameBlocks, PalmTree, NameGrid2D
+  contexts/     # CommandMenuContext: open state and the ⌘K shortcut
+  sections/     # Earlier homepage sections, parked until their pages are redesigned
   pages/        # Routed pages (lazy-loaded except Home)
   data/         # Typed content modules: edit content here, not in JSX
   hooks/        # useReducedMotion, useMediaQuery, useInViewport, usePageVisible, ...
-  lib/          # utils, Devicon logo paths
+  lib/          # nameGrid (bitmap font, seeded graph), contact, platform, utils
   test/         # Vitest + RTL tests
-e2e/            # Playwright visual snapshots
+e2e/            # Playwright snapshots and navigation checks
+scripts/        # export-palm-poster.mjs
 
 public/
-  resume.pdf          # Shown in the resume modal and offered as a download
+  favicon.svg         # KJ pixel mark (+ favicon-32.png)
+  palm-poster.webp    # Palm resting pose: mobile and no-WebGL fallback
   hero-gradient.webp  # Static export of the hero gradient
   og-image.png        # 1200x630 social preview
 
@@ -91,14 +95,15 @@ vercel.json               # SPA rewrites and security headers
 
 ## Routes
 
-| Route                | Description                                                                |
-| -------------------- | -------------------------------------------------------------------------- |
-| `/`                  | Hero, highlights, about, projects, experience, leadership, skills, contact |
-| `/experience`        | Full experience timeline                                                   |
-| `/leadership`        | All leadership roles                                                       |
-| `/projects`          | All projects                                                               |
-| `/projects/vigil`    | Vigil case study                                                           |
-| `/projects/clausify` | Clausify case study                                                        |
+| Route                | Description                                |
+| -------------------- | ------------------------------------------ |
+| `/`                  | Greeting, 3D name, intro, and contact line |
+| `/about`             | About me, headshot, and education          |
+| `/experience`        | Full experience timeline                   |
+| `/leadership`        | All leadership roles                       |
+| `/projects`          | All projects                               |
+| `/projects/vigil`    | Vigil case study                           |
+| `/projects/clausify` | Clausify case study                        |
 
 ---
 
@@ -110,21 +115,21 @@ All content lives in typed modules under `src/data/`.
 | --------------------- | --------------------------------------------------------------------------------- |
 | `data/projects.ts`    | Projects: description, stack, case study, live and repo links, development status |
 | `data/experience.ts`  | Roles: title, company, period, bullets, stack                                     |
-| `data/leadership.ts`  | Leadership roles; the home page shows the first four                              |
+| `data/leadership.ts`  | Leadership roles                                                                  |
 | `data/skills.ts`      | Skill categories                                                                  |
-| `data/sphereLogos.ts` | Logos on the 3D sphere                                                            |
+| `data/sphereLogos.ts` | Logos on the 3D sphere (parked)                                                   |
 | `data/spotlight.ts`   | Highlights strip tiles                                                            |
 
 ---
 
 ## CI
 
-Every push to `main` or `feat/**` and every pull request runs lint, typecheck, unit tests, and a production build on Node 24. A second job builds the site, captures full-page Playwright screenshots of `/`, `/projects/vigil`, and `/projects/clausify` at 1280, 1728, and 2560px, checks for horizontal overflow, and uploads the screenshots as an artifact.
+Every push to `main` or `feat/**` and every pull request runs lint, typecheck, unit tests, and a production build on Node 24. A second job builds the site, captures full-page Playwright screenshots (`/` and `/about` at 1280, 1728, and 375px; the case studies at 1280, 1728, and 2560px), checks for horizontal overflow, runs navigation and command menu checks, and uploads the screenshots as an artifact.
 
 ---
 
 ## Deploying
 
-Vercel auto-detects Vite (build `npm run build`, output `dist`). `vercel.json` handles SPA rewrites, security headers, and immutable asset caching. `X-Frame-Options` is `SAMEORIGIN` so the resume PDF renders inside the modal iframe.
+Vercel auto-detects Vite (build `npm run build`, output `dist`). `vercel.json` handles SPA rewrites, security headers, and immutable asset caching. `X-Frame-Options` is `DENY`: the site is never framed.
 
 When the domain changes, update `canonical`, `og:url`, `og:image`, `twitter:image`, and the JSON-LD `url` in `index.html`.

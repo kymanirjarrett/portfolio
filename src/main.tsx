@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// Self-hosted variable fonts. wdth.css carries both the weight and width axes.
-import '@fontsource-variable/mona-sans/wdth.css'
-import '@fontsource-variable/atkinson-hyperlegible-next'
+// Self-hosted variable fonts: Space Grotesk for everything, JetBrains Mono for tiny labels.
+import '@fontsource-variable/space-grotesk'
+import '@fontsource-variable/jetbrains-mono'
 import 'lenis/dist/lenis.css'
 import './index.css'
 import App from './App'

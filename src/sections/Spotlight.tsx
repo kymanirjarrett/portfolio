@@ -42,17 +42,17 @@ function Tile({ tile, active, onFocusTile, onLeaveTile }: TileProps) {
   const className = cn(
     'flex h-full flex-col justify-between gap-10 rounded-panel p-7 transition-[background-color,color,box-shadow] duration-500 ease-out-expo lg:p-10',
     active
-      ? 'bg-cobalt text-fg shadow-[0_18px_40px_-12px_rgb(47_84_235/0.55)]'
-      : 'text-fg ring-1 ring-inset ring-fg/15 hover:ring-fg/35'
+      ? 'bg-accent text-canvas shadow-[0_18px_40px_-12px_rgb(14_107_79/0.45)]'
+      : 'text-ink ring-1 ring-inset ring-ink/15 hover:ring-ink/35'
   )
 
   const content = (
     <>
       <div>
-        <p className={cn('font-display font-medium', active ? 'text-fg' : 'text-muted')}>
+        <p className={cn('font-display font-medium', active ? 'text-canvas' : 'text-muted')}>
           {tile.subtitle}
         </p>
-        <h3 className="mt-3 font-display text-[clamp(2rem,1.3rem+2.2vw,4rem)] font-bold leading-[1.02] tracking-[-0.02em] [font-stretch:112%]">
+        <h3 className="mt-3 font-display text-[clamp(2rem,1.3rem+2.2vw,4rem)] font-bold leading-[1.02] tracking-[-0.02em]">
           {tile.title}
         </h3>
       </div>
@@ -61,7 +61,7 @@ function Tile({ tile, active, onFocusTile, onLeaveTile }: TileProps) {
         <span
           className={cn(
             'mt-6 inline-block font-display font-semibold underline underline-offset-4',
-            active ? 'decoration-fg/50' : 'text-cobalt-light decoration-cobalt-light/40'
+            active ? 'decoration-canvas/50' : 'text-accent decoration-accent/40'
           )}
         >
           {tile.action}

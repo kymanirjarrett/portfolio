@@ -3,13 +3,14 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { ReactLenis, useLenis } from 'lenis/react'
 import Home from './pages/Home'
 import Nav from './components/Nav'
-import { ResumeModalProvider } from './contexts/ResumeModalContext'
+import { CommandMenuProvider } from './contexts/CommandMenuContext'
 
 const VigilCaseStudy = lazy(() => import('./pages/VigilCaseStudy'))
 const ClausifyCaseStudy = lazy(() => import('./pages/ClausifyCaseStudy'))
 const ExperiencePage = lazy(() => import('./pages/ExperiencePage'))
 const LeadershipPage = lazy(() => import('./pages/LeadershipPage'))
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
+const AboutPage = lazy(() => import('./pages/AboutPage'))
 
 function PageLoader() {
   return <div className="min-h-screen bg-canvas" aria-busy="true" />
@@ -32,10 +33,10 @@ export default function App() {
     // prefers-reduced-motion (respectReducedMotion defaults to true).
     <ReactLenis root options={{ autoRaf: true }}>
       <BrowserRouter>
-        <ResumeModalProvider>
+        <CommandMenuProvider>
           <a
             href="#main-content"
-            className="sr-only z-50 rounded-full bg-fg px-5 py-2.5 font-display font-semibold text-canvas focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+            className="sr-only z-50 rounded-full bg-ink px-5 py-2.5 font-display font-semibold text-canvas focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
           >
             Skip to content
           </a>
@@ -44,6 +45,7 @@ export default function App() {
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/experience" element={<ExperiencePage />} />
               <Route path="/leadership" element={<LeadershipPage />} />
               <Route path="/projects" element={<ProjectsPage />} />
@@ -51,7 +53,7 @@ export default function App() {
               <Route path="/projects/clausify" element={<ClausifyCaseStudy />} />
             </Routes>
           </Suspense>
-        </ResumeModalProvider>
+        </CommandMenuProvider>
       </BrowserRouter>
     </ReactLenis>
   )

@@ -3,24 +3,28 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
-      // "Blue hour" palette, dark only. Cobalt does most of the work: as a fill
-      // and for lines on dark (3.26:1, fine for UI), with cobalt-light for text
-      // (7.01:1). Ember is reserved for the primary action and the "in active
-      // development" marker, always as a fill with ink text.
+      // "Warm daylight" palette, light only. Contrast on canvas: ink 13.18:1,
+      // muted 4.99:1, accent 5.77:1 (all pass WCAG AA for body text). The level
+      // ramp sits between GitHub's contribution greens and palm and sea greens.
       colors: {
-        canvas: '#0D0D24', // page background
-        surface: '#141432', // raised: nav, modal, contact band
-        fg: '#F7F7FC', // 17.87:1 on canvas
-        muted: '#A9AACB', // 8.45:1 on canvas
-        cobalt: '#2F54EB',
-        'cobalt-light': '#7F96FF',
-        violet: '#7B4DFF',
-        ember: '#FF7F11',
-        ink: '#141432', // text on ember fills only
+        canvas: '#F6F1E7', // page background (warm sand)
+        'sky-deep': '#D4ECF2', // very top of the hero gradient (muted text still 4.57:1)
+        sky: '#EAF6F8', // upper hero gradient
+        ink: '#1F2A24', // body text and the logo
+        muted: '#5C6B63', // secondary text
+        accent: '#0E6B4F', // links and focus rings (deep palm green)
+        level: {
+          0: '#E8E3D6', // empty contribution cell
+          1: '#A7E3C4',
+          2: '#4CC38A',
+          3: '#1F9A6B',
+          4: '#0E6B4F', // also the name blocks at rest
+        },
       },
       fontFamily: {
-        display: ['"Mona Sans Variable"', 'system-ui', 'sans-serif'],
-        sans: ['"Atkinson Hyperlegible Next Variable"', 'system-ui', 'sans-serif'],
+        display: ['"Space Grotesk Variable"', 'system-ui', 'sans-serif'],
+        sans: ['"Space Grotesk Variable"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono Variable"', 'ui-monospace', 'monospace'],
       },
       // Fluid role scale: large monitors get larger type instead of empty margins.
       fontSize: {
