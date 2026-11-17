@@ -19,10 +19,11 @@ const FROND_COUNT = 8
 const LEAFLET_PAIRS = 15
 const MAX_LEAN = THREE.MathUtils.degToRad(3.5)
 
-// The trunk leans in from the right toward the text.
+// The trunk leans in from the right toward the text. It starts well below the
+// bottom of the view, so the palm always runs off the bottom edge of the screen.
 const TRUNK_CURVE = new THREE.CubicBezierCurve3(
-  new THREE.Vector3(0, 0, 0),
-  new THREE.Vector3(0.2, 2.2, 0),
+  new THREE.Vector3(0.45, -4, 0),
+  new THREE.Vector3(0.3, 1.4, 0),
   new THREE.Vector3(-0.7, 4.3, 0.2),
   new THREE.Vector3(-1.7, 5.9, 0.3)
 )
@@ -146,7 +147,7 @@ function PalmCamera() {
 
 function Trunk() {
   const segments = useMemo(() => {
-    const count = 9
+    const count = 13
     return Array.from({ length: count }, (_, i) => {
       const t0 = i / count
       const t1 = (i + 1) / count
@@ -159,7 +160,7 @@ function Trunk() {
         new THREE.Vector3(0, 1, 0),
         dir.normalize()
       )
-      const radius = THREE.MathUtils.lerp(0.36, 0.2, t0)
+      const radius = THREE.MathUtils.lerp(0.42, 0.2, t0)
       return { mid, quat, length: length * 1.04, radius }
     })
   }, [])

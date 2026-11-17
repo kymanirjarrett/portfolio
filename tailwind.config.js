@@ -8,7 +8,8 @@ export default {
       // ramp sits between GitHub's contribution greens and palm and sea greens.
       colors: {
         canvas: '#F6F1E7', // page background (warm sand)
-        sky: '#EAF6F8', // top of the hero gradient
+        'sky-deep': '#D4ECF2', // very top of the hero gradient (muted text still 4.57:1)
+        sky: '#EAF6F8', // upper hero gradient
         ink: '#1F2A24', // body text and the logo
         muted: '#5C6B63', // secondary text
         accent: '#0E6B4F', // links and focus rings (deep palm green)
