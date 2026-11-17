@@ -127,7 +127,7 @@ export default function Home() {
               the <External href="https://www.uc.edu">University of Cincinnati</External>.
             </p>
             <p>
-              A previous Software Engineer Intern at{' '}
+              Previously a Software Engineer Intern at{' '}
               <External href="https://www.jmsmucker.com">The J.M. Smucker Co.</External>, where I
               shipped keyless CI/CD and data pipelines on AWS.
             </p>
@@ -139,9 +139,9 @@ export default function Home() {
               .
             </p>
             <p>
-              Outside of work, I'm building <Internal to="/projects/vigil">Vigil</Internal> and{' '}
-              <Internal to="/projects/clausify">Clausify</Internal>, and leading corporate outreach
-              for <External href="https://www.colorstack.org">ColorStack</External> at UC.
+              Outside of work, I'm building <Internal to="/projects">projects</Internal> that
+              improve the lives of those around me, and leading corporate outreach for{' '}
+              <External href="https://www.colorstack.org">ColorStack</External> at UC.
             </p>
           </div>
         </div>
