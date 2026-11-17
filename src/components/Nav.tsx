@@ -45,7 +45,9 @@ export default function Nav() {
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow] duration-300',
-        scrolled || menuOpen
+        // Solid everywhere but the homepage, whose hero is designed to sit under a
+        // clear nav; elsewhere (the beach sky) muted links would drop below AA.
+        scrolled || menuOpen || location.pathname !== '/'
           ? 'bg-canvas/90 shadow-[0_1px_0_rgb(31_42_36/0.08)] backdrop-blur-sm'
           : 'bg-transparent'
       )}

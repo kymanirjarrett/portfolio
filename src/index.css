@@ -101,7 +101,7 @@
   }
 
   .stack-tag {
-    @apply rounded-tag px-2 py-0.5 text-small text-muted;
+    @apply rounded-tag px-2 py-0.5 text-small text-ink/80;
     background-color: rgb(31 42 36 / 0.06);
   }
 
