@@ -1,6 +1,7 @@
 import { Mail } from 'lucide-react'
 import { siGithub } from 'simple-icons'
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '@/lib/contact'
+import Tooltip from '@/components/Tooltip'
 import { cn } from '@/lib/utils'
 
 interface IconProps {
@@ -48,46 +49,76 @@ interface SocialLinksProps {
   className?: string
   linkClassName?: string
   size?: number
+  /** Label each icon on hover and keyboard focus. Off in the mobile menu. */
+  tooltips?: boolean
+  /** Tooltip alignment for the last icon, which can sit near the screen edge. */
+  lastAlign?: 'center' | 'end'
 }
 
 /**
  * Email, GitHub, and LinkedIn as icon links, each with an accessible name.
  * Email opens the mail app; the profiles open in a new tab.
  */
-export function SocialLinks({ className, linkClassName, size = 20 }: SocialLinksProps) {
+export function SocialLinks({
+  className,
+  linkClassName,
+  size = 20,
+  tooltips = true,
+  lastAlign = 'center',
+}: SocialLinksProps) {
   const link = cn(
     'inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 hover:text-accent',
     linkClassName
   )
+  const items = [
+    {
+      label: 'Email',
+      tip: EMAIL,
+      href: `mailto:${EMAIL}`,
+      external: false,
+      icon: <Mail size={size} strokeWidth={2} aria-hidden="true" />,
+    },
+    {
+      label: 'GitHub',
+      tip: 'GitHub',
+      href: GITHUB_URL,
+      external: true,
+      icon: <GitHubIcon size={size} />,
+    },
+    {
+      label: 'LinkedIn',
+      tip: 'LinkedIn',
+      href: LINKEDIN_URL,
+      external: true,
+      icon: <LinkedInIcon size={size} />,
+    },
+  ]
+
   return (
     <ul className={cn('flex items-center gap-1', className)}>
-      <li>
-        <a href={`mailto:${EMAIL}`} aria-label="Email" title={EMAIL} className={link}>
-          <Mail size={size} strokeWidth={2} aria-hidden="true" />
-        </a>
-      </li>
-      <li>
-        <a
-          href={GITHUB_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="GitHub"
-          className={link}
-        >
-          <GitHubIcon size={size} />
-        </a>
-      </li>
-      <li>
-        <a
-          href={LINKEDIN_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="LinkedIn"
-          className={link}
-        >
-          <LinkedInIcon size={size} />
-        </a>
-      </li>
+      {items.map(({ label, tip, href, external, icon }, i) => {
+        const anchor = (
+          <a
+            href={href}
+            aria-label={label}
+            className={link}
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            {icon}
+          </a>
+        )
+        return (
+          <li key={label}>
+            {tooltips ? (
+              <Tooltip label={tip} align={i === items.length - 1 ? lastAlign : 'center'}>
+                {anchor}
+              </Tooltip>
+            ) : (
+              anchor
+            )}
+          </li>
+        )
+      })}
     </ul>
   )
 }

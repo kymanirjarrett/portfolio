@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import PixelMark from '@/components/PixelMark'
 import { SocialLinks } from '@/components/SocialIcons'
+import Tooltip from '@/components/Tooltip'
 import { useCommandMenu } from '@/contexts/CommandMenuContext'
 import { isApplePlatform } from '@/lib/platform'
 import { cn } from '@/lib/utils'
@@ -51,13 +52,15 @@ export default function Nav() {
       )}
     >
       <nav aria-label="Main" className="flex h-16 items-center justify-between px-gutter">
-        <Link
-          to="/"
-          aria-label="Kymani Jarrett, home"
-          className="-m-2 rounded-md p-2 text-ink transition-colors hover:text-accent"
-        >
-          <PixelMark className="h-6 w-auto" />
-        </Link>
+        <Tooltip label="Home" align="start">
+          <Link
+            to="/"
+            aria-label="Kymani Jarrett, home"
+            className="-m-2 rounded-md p-2 text-ink transition-colors hover:text-accent"
+          >
+            <PixelMark className="h-6 w-auto" />
+          </Link>
+        </Tooltip>
 
         <div className="hidden items-center gap-8 md:flex">
           <ul className="flex items-center gap-7">
@@ -80,17 +83,19 @@ export default function Nav() {
           </ul>
           <div className="flex items-center gap-2">
             <SocialLinks />
-            <button
-              type="button"
-              onClick={commandMenu.toggle}
-              aria-keyshortcuts="Meta+K Control+K"
-              className="ml-1 rounded-md px-2 py-1 font-mono text-[0.75rem] text-muted ring-1 ring-inset ring-ink/15 transition-colors hover:text-ink hover:ring-ink/30"
-            >
-              <span className="sr-only">Open command menu</span>
-              <kbd aria-hidden="true" className="font-mono">
-                {shortcut}
-              </kbd>
-            </button>
+            <Tooltip label="Command menu" align="end">
+              <button
+                type="button"
+                onClick={commandMenu.toggle}
+                aria-keyshortcuts="Meta+K Control+K"
+                className="ml-1 rounded-md px-2 py-1 font-mono text-[0.75rem] text-muted ring-1 ring-inset ring-ink/15 transition-colors hover:text-ink hover:ring-ink/30"
+              >
+                <span className="sr-only">Open command menu</span>
+                <kbd aria-hidden="true" className="font-mono">
+                  {shortcut}
+                </kbd>
+              </button>
+            </Tooltip>
           </div>
         </div>
 
@@ -121,7 +126,7 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <SocialLinks className="-ml-2.5" size={22} />
+          <SocialLinks className="-ml-2.5" size={22} tooltips={false} />
         </div>
       )}
     </header>
