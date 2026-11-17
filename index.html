@@ -65,6 +65,17 @@
       }
     </script>
 
+    <!-- Fetch the main text font with the HTML, so first paint already uses it and
+         text does not re-wrap (a layout shift) when it arrives. Vite hashes this
+         to the same file the font CSS points at. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="./node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2"
+    />
+
     <!-- The mark is 9 cells wide, so it has no crisp 16 px raster: SVG first, 32 px PNG fallback. -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
